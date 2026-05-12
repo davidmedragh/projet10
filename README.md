@@ -1,5 +1,9 @@
 # Projet 10 — Labellisez et appliquez des approches semi-supervisées en traitement d'images
 
+<p align="center">
+  <img src="doc/logo/logo_CurelyticsIA.png" alt="Logo CurelyticsIA" width="260">
+</p>
+
 **Auteur :** David MEDRAGH  
 **Date :** Mai 2026  
 **Durée estimée :** 40 heures
@@ -14,11 +18,14 @@
   - [Pourquoi ces compétences sont importantes](#pourquoi-ces-compétences-sont-importantes)
   - [Contexte métier](#contexte-métier)
   - [Ma mission](#ma-mission)
+  - [Contraintes et livrables](#contraintes-et-livrables)
   - [Organisation pédagogique](#organisation-pédagogique)
     - [Cours suivis](#cours-suivis)
     - [Option choisie](#option-choisie)
     - [Soutenance et autoévaluation](#soutenance-et-autoévaluation)
 - [Objectifs pédagogiques](#objectifs-pédagogiques)
+- [Structure du workspace](#structure-du-workspace)
+  - [Arborescence du dépôt](#arborescence-du-dépôt)
 - [Étape 1 — Importez les données et explorez le jeu de radiographies](#étape-1--importez-les-données-et-explorez-le-jeu-de-radiographies)
 - [Étape 2 — Prétraitez et extrayez les features](#étape-2--prétraitez-et-extrayez-les-features)
 - [Étape 3 — Réalisez une analyse non supervisée](#étape-3--réalisez-une-analyse-non-supervisée)
@@ -28,9 +35,11 @@
 
 ## Contexte du projet
 
-Au fil de mon parcours, j'ai découvert les concepts de traitement d'images, d'analyse non-supervisée et de deep learning dans des contextes complexes. Ce nouveau projet me permet de consolider ces acquis en les appliquant de manière transversale : du prétraitement d'images à l'apprentissage semi-supervisé, en passant par l'extraction de features et le clustering.
+Ce projet correspond à l'**Option B — Mission fictive** d'OpenClassrooms. Je travaille dans un scénario professionnel où je suis Data Scientist junior en Computer Vision chez **CurelyticsIA**, une startup de e-santé qui explore l'analyse d'images médicales pour assister les professionnels de santé.
 
-Ce README pose le cadre du projet 10. Les sections techniques détaillées seront ajoutées au fur et à mesure des éléments réellement produits.
+La mission porte sur une première phase exploratoire du projet **BrainScanAI**. L'objectif est d'étudier un jeu d'images médicales majoritairement non étiquetées, d'exploiter un petit sous-ensemble annoté, puis d'évaluer si une approche semi-supervisée peut accélérer la labellisation et préparer un passage à l'échelle.
+
+Ce README pose le cadre du projet 10. Les sections techniques détaillées seront ajoutées au fur et à mesure des éléments réellement produits dans le dépôt.
 
 ## Mission
 
@@ -53,9 +62,11 @@ Savoir prétraiter les données et extraire des représentations pertinentes me 
 
 ### Contexte métier
 
-Je suis Data Scientist junior spécialisé en Computer Vision au sein de **CurelyticsIA**, une startup innovante dans le domaine de la e-santé. L'entreprise développe des solutions basées sur l'intelligence artificielle pour assister les professionnels de santé dans l'analyse d'images médicales, en particulier des IRM.
+Je suis Data Scientist junior spécialisé en Computer Vision au sein de **CurelyticsIA**, une startup innovante dans le domaine de la e-santé. L'entreprise développe des solutions basées sur l'intelligence artificielle pour assister les professionnels de santé dans l'analyse d'images médicales, en particulier des IRM cérébrales.
 
-Dans le cadre d'un nouveau projet R&D, CurelyticsIA souhaite explorer la possibilité d'automatiser la détection de tumeurs du cerveau. Un ensemble conséquent de radios a été collecté : la majorité de ces images ne dispose d'aucun étiquetage, tandis qu'un sous-ensemble limité a été annoté par des radiologues experts.
+Dans le cadre d'un nouveau projet R&D nommé **BrainScanAI**, Clara Martin, Responsable Data Science, me confie une première phase d'exploration et de modélisation. Le besoin métier est clair : explorer la possibilité d'automatiser la détection de tumeurs du cerveau à partir d'images médicales, alors que la majorité des données n'est pas étiquetée et qu'un sous-ensemble limité seulement a été annoté par des radiologues experts.
+
+Le brief pédagogique mentionne un fichier ZIP transmis en pièce jointe, avec les images, une documentation technique et une liste restreinte de labels `normal` / `cancéreux`. Il introduit aussi une contrainte de coût sur la labellisation et une question de faisabilité à grande échelle, ce qui donne au projet une dimension à la fois technique et économique.
 
 ### Ma mission
 
@@ -64,7 +75,25 @@ Je suis chargé de concevoir une première exploration analytique du jeu de donn
 - explorer les images et extraire des caractéristiques visuelles via un modèle pré-entraîné ;
 - appliquer des méthodes de clustering pour identifier des structures ou regroupements dans les données ;
 - mettre en œuvre une méthode d'apprentissage semi-supervisé à partir des quelques étiquettes disponibles ;
-- synthétiser mes résultats, formuler des recommandations, et les présenter à mon équipe projet.
+- synthétiser mes résultats, formuler des recommandations, et les présenter à mon équipe projet ;
+- évaluer si un passage à l'échelle est envisageable pour un budget de **5 000 euros** sur **4 millions d'images** à labelliser, et préciser sous quelles conditions.
+
+### Contraintes et livrables
+
+Le cadrage de mission transmis par Clara Martin impose plusieurs contraintes de réalisation :
+
+- travailler en **Python** ;
+- tester **plusieurs algorithmes** ;
+- choisir des **métriques pertinentes** selon le type d'erreur le plus critique : F1-score, accuracy, précision, rappel ou autre ;
+- définir clairement ma **definition of done**, c'est-à-dire ce que je considère comme un objectif atteint.
+
+Les livrables attendus sont également bien cadrés :
+
+- un ou plusieurs **notebooks** documentant le preprocessing et l'extraction des features ;
+- une analyse **non supervisée** avec exploration des données et entraînement de modèles de clustering ;
+- une approche **semi-supervisée** permettant d'exploiter les labels partiels pour prédire les étiquettes manquantes ;
+- un **support de présentation** qui synthétise mon approche, mes résultats et mes recommandations techniques ;
+- une prise de position argumentée sur la **faisabilité d'un passage à l'échelle**, en intégrant la contrainte budgétaire.
 
 ### Organisation pédagogique
 
@@ -77,7 +106,7 @@ Les deux cours associés à ce projet sont :
 
 #### Option choisie
 
-J'ai choisi l'**Option B — Mission fictive** : j'analyse des images médicales avec des méthodes semi-supervisées, dans un cadre structuré proche d'un cas réel, avec un dataset fourni.
+J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de modélisation — Données radios*. Je travaille dans un scénario de projet professionnel où je dois explorer des images médicales, comparer plusieurs approches, exploiter des labels partiels et produire des livrables comparables à ceux attendus dans une vraie phase R&D.
 
 #### Soutenance et autoévaluation
 
@@ -89,6 +118,27 @@ J'ai choisi l'**Option B — Mission fictive** : j'analyse des images médicales
 
 - identifier ou créer un modèle d'apprentissage adapté aux contraintes et aux besoins métier ;
 - préparer et transformer des données afin de les adapter au modèle d'apprentissage.
+
+## Structure du workspace
+
+### Arborescence du dépôt
+
+```text
+projet10/
+├── .gitignore                                                    # Exclusions Git du projet
+├── README.md                                                     # Document de référence du projet
+├── data/
+│   └── mri_dataset_brain_cancer_oc/
+│       ├── avec_labels/
+│       │   ├── cancer/                                           # Images IRM annotées "cancer"
+│       │   └── normal/                                           # Images IRM annotées "normal"
+│       ├── sans_label/                                           # Images IRM non étiquetées
+│       └── Jeu de Données d'Images Cérébrales pour la Détection de Tumeurs.txt
+│                                                                  # Description du dataset
+└── doc/
+    └── logo/
+        └── logo_CurelyticsIA.png                                 # Logo utilisé dans la documentation
+```
 
 ## Étape 1 — Importez les données et explorez le jeu de radiographies
 
