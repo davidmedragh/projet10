@@ -1,0 +1,75 @@
+@startuml architecture_etape1_exploration
+!theme plain
+
+skinparam style strictuml
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam ArrowColor #1A5C8A
+skinparam ArrowThickness 1.2
+skinparam package {
+    BackgroundColor #F7FBFD
+    BorderColor #1A5C8A
+    FontColor #0B2A45
+}
+skinparam folder {
+    BackgroundColor #EEF7FB
+    BorderColor #1A5C8A
+    FontColor #0B2A45
+}
+skinparam node {
+    BackgroundColor #F2F8FC
+    BorderColor #1A5C8A
+    FontColor #0B2A45
+}
+skinparam component {
+    BackgroundColor #E8F4F8
+    BorderColor #1A5C8A
+    FontColor #0B2A45
+}
+skinparam artifact {
+    BackgroundColor #FFF7E2
+    BorderColor #C88B00
+    FontColor #5C4300
+}
+
+title Architecture et flux de donnees - exploration (etape 1)
+
+package "Source de Données" #EAF6FF {
+    folder "data/mri_dataset_brain_cancer_oc" as dataset #F4FBFF {
+        folder "avec_labels" #EDF7E9 {
+            artifact "cancer (50 .jpg)" as f_cancer #FDECEC
+            artifact "normal (50 .jpg)" as f_normal #ECF7EE
+        }
+        folder "sans_label" #F8F3FE {
+            artifact "sans_label (1406 .jpg)" as f_sl #F4EEFF
+        }
+    }
+}
+
+package "Environnement Virtuel (uv - Python 3.11)" #F3F8FD {
+    node "Moteur d'Exploration (EDA)" #EAF3FB {
+        component "projet10_etape1_exploration.ipynb\n(Pillow, Torchvision, Pandas)" as notebook #DDEFFA
+    }
+    
+    node "Moteur de Restitution" #F9F1DF {
+        component "scripts/generate_pptx_etape1.py\n(python-pptx)" as script_pptx #FFF4DA
+    }
+}
+
+package "Livrables et Sorties" #FFF7E8 {
+    artifact "echantillon_visuel_etape1.png" as out_png #EAF6FF
+    artifact "projet10_etape1_exploration.pptx" as out_pptx #FFF0CC
+}
+
+' Flux de données
+dataset --> notebook : Scan exhaustif (1 506 imgs)\nChargement ImageFolder
+notebook --> out_png : Génération de\nla grille visuelle
+
+out_png ..> script_pptx : Import de l'image
+notebook ..> script_pptx : Données statistiques\net observations
+
+script_pptx --> out_pptx : Generation de\nla presentation
+
+right footer David MEDRAGH projet10
+@enduml

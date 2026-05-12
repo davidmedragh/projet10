@@ -1,0 +1,56 @@
+@startuml etape1_diagramme_sequence_inspection_dataset
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam sequenceArrowThickness 1.2
+skinparam ArrowColor #1A5C8A
+skinparam ParticipantBorderColor #1A5C8A
+skinparam ParticipantBackgroundColor #EAF6FF
+skinparam ParticipantFontColor #0B2A45
+skinparam ActorBorderColor #C88B00
+skinparam ActorBackgroundColor #FFF4DA
+skinparam ActorFontColor #5C4300
+skinparam LifeLineBorderColor #9CC5DD
+skinparam LifeLineBackgroundColor #F7FBFD
+skinparam NoteBackgroundColor #EEF7FB
+skinparam NoteBorderColor #4A9EC9
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+title Etape 1 - Diagramme de sequence de l'inspection du dataset
+right footer David MEDRAGH projet10
+
+actor "Data Scientist junior" as ds
+participant "Notebook" as nb
+participant "Filesystem" as fs
+participant "PIL" as pil
+participant "pandas" as pd
+participant "matplotlib" as plt
+
+ds -> nb : Lancer l'exploration du dataset
+nb -> fs : Lister les sous-dossiers et les fichiers
+fs --> nb : Chemins des images
+
+loop Pour chaque image
+  nb -> pil : Ouvrir l'image
+  alt Image lisible
+    pil --> nb : format, dimensions, mode
+    nb -> pd : Ajouter une ligne au tableau de controle
+  else Image illisible
+    pil --> nb : erreur d'ouverture
+    nb -> pd : Ajouter une anomalie
+  end
+end
+
+nb -> pd : Agreger les statistiques par dossier
+pd --> nb : Tableau recapitulatif
+nb -> plt : Afficher un echantillon d'images
+plt --> nb : Grille visuelle
+nb -> plt : Generer les graphiques d'exploration
+plt --> nb : Visualisations finales
+nb --> ds : Observations et constats
+
+@enduml

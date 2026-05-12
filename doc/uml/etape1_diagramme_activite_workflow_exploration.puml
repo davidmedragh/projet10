@@ -1,0 +1,42 @@
+@startuml etape1_diagramme_activite_workflow_exploration
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #1A5C8A
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #1A5C8A
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 1 - Diagramme d'activite du workflow d'exploration
+right footer David MEDRAGH projet10
+
+start
+:Charger les chemins du dataset;
+:Inventorier les sous-dossiers du corpus;
+:Compter les images et les extensions;
+:Comparer le contenu reel a l'enonce;
+:Scanner toutes les images avec PIL;
+:Verifier lisibilite, format, dimensions et mode couleur;
+if (Anomalies detectees ?) then (Oui)
+  :Isoler et documenter les anomalies;
+else (Non)
+  :Valider la coherence technique du dataset;
+endif
+:Construire le tableau recapitulatif;
+:Selectionner un echantillon visuel reduit;
+:Afficher des exemples par categorie;
+:Rediger les observations de l'etape 1;
+:Formuler les implications pour l'etape 2;
+stop
+
+@enduml

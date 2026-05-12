@@ -1,0 +1,62 @@
+@startuml etape1_diagramme_package_structure_dataset
+!theme plain
+top to bottom direction
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #1A5C8A
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF4DA
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+skinparam note {
+  BackgroundColor #EEF7FB
+  BorderColor #4A9EC9
+  FontColor #0B2A45
+}
+hide stereotype
+
+title Etape 1 - Diagramme de package de la structure du dataset
+right footer David MEDRAGH projet10
+
+package "data/mri_dataset_brain_cancer_oc" as root #EAF6FF {
+  artifact "Jeu de Donnees d'Images Cerebrales\npour la Detection de Tumeurs.txt" as dataset_doc #FFF0CC
+
+  package "avec_labels" as labeled #EDF7E9 {
+    package "cancer" as cancer_pkg #FDECEC
+    package "normal" as normal_pkg #ECF7EE
+  }
+
+  package "sans_label" as unlabeled_pkg #F4EEFF
+}
+
+note right of cancer_pkg
+50 images JPG
+label : cancer
+end note
+
+note right of normal_pkg
+50 images JPG
+label : normal
+end note
+
+note right of unlabeled_pkg
+1406 images JPG
+pas de label explicite
+end note
+
+note bottom of root
+Jeu annonce : 1500 images
+Contenu observe : 1506 images
+Structure : 2 dossiers etiquetes + 1 dossier non etiquete
+end note
+
+@enduml

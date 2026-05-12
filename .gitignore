@@ -1,1 +1,9 @@
 .github/agents/
+.venv/
+data/
+__pycache__/
+.ipynb_checkpoints/
+Livrable/
+livrables/
+*.pyc
+main.py

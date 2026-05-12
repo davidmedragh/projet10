@@ -1,0 +1,40 @@
+@startuml etape1_diagramme_etats_cycle_image
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #1A5C8A
+skinparam state {
+  BackgroundColor #EAF6FF
+  BorderColor #1A5C8A
+  FontColor #0B2A45
+}
+
+title Etape 1 - Diagramme d'etats du cycle d'une image
+right footer David MEDRAGH projet10
+
+[*] --> Detectee : fichier reperes
+Detectee --> Chargee : ouverture demandee
+
+Chargee --> Illisible : erreur d'ouverture
+Chargee --> Lisible : ouverture reussie
+
+Lisible --> ControleFormat
+ControleFormat --> AnomalieFormat : format inattendu
+ControleFormat --> ControleDimensions : format conforme
+
+ControleDimensions --> AnomalieDimensions : taille inattendue
+ControleDimensions --> ControleMode : taille conforme
+
+ControleMode --> AnomalieMode : mode inattendu
+ControleMode --> Validee : mode conforme
+
+Validee --> [*]
+Illisible --> [*]
+AnomalieFormat --> [*]
+AnomalieDimensions --> [*]
+AnomalieMode --> [*]
+
+@enduml
