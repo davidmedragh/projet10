@@ -38,6 +38,7 @@
   - [Résumé de l'exploration](#résumé-de-lexploration)
   - [Écarts identifiés](#écarts-identifiés)
   - [Observations clés](#observations-clés)
+  - [Échantillon visuel](#échantillon-visuel)
   - [Synthèses visuelles](#synthèses-visuelles)
     - [Architecture détaillée de l'étape 1](#architecture-détaillée-de-létape-1)
     - [Stack technique de l'étape 1](#stack-technique-de-létape-1)
@@ -242,6 +243,14 @@ Ces écarts sont mineurs et documentés. Je retiens les chiffres réels pour la 
 - Le déséquilibre est marqué : seulement 100 images labellisées pour 1 406 non labellisées (~6,6 % de labels) — c'est précisément le contexte qui justifie une approche semi-supervisée
 - Toutes les images sont en RGB : pas de conversion de mode nécessaire à l'étape 2
 - Les images sont en 512×512, je les redimensionnerai au format attendu par le modèle pré-entraîné (ex. 224×224 pour ResNet50)
+
+### Échantillon visuel
+
+L'aperçu ci-dessous reprend l'échantillon affiché dans le notebook, avec `5` images par catégorie : `cancer`, `normal` et `sans_label`. Il permet de visualiser rapidement le contenu réel du corpus avant les étapes de prétraitement et d'extraction de features.
+
+<p align="center">
+  <img src="doc/dataset_preview/echantillon_visuel_etape1.png" alt="Echantillon visuel de 5 images par categorie pour l etape 1" width="100%">
+</p>
 
 ### Synthèses visuelles
 
