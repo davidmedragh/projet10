@@ -1,16 +1,27 @@
 [project]
 name = "projet10"
 version = "0.1.0"
-description = "Add your description here"
+description = "Projet 10 — Labellisez et appliquez des approches semi-supervisées en traitement d'images (OpenClassrooms, parcours Data Scientist)"
 readme = "README.md"
+authors = [
+    { name = "David MEDRAGH" },
+]
 requires-python = ">=3.11"
 dependencies = [
+    # Kernel Jupyter pour l'exécution des notebooks dans VS Code
     "ipykernel>=7.2.0",
+    # Visualisation : graphiques, grilles d'images, histogrammes
     "matplotlib>=3.10.9",
+    # Calcul numérique : manipulation de tableaux, opérations sur les pixels
     "numpy>=2.4.4",
+    # DataFrames : tableaux récapitulatifs, agrégations par dossier
     "pandas>=3.0.3",
+    # Ouverture et vérification technique des images (dimensions, mode, intégrité)
     "pillow>=12.2.0",
+    # Génération du support de présentation PowerPoint (.pptx)
     "python-pptx>=1.0.2",
+    # Framework deep learning : tenseurs, modèles pré-entraînés (étapes 2-4)
     "torch>=2.11.0",
+    # Vision par ordinateur : ImageFolder, transforms, modèles pré-entraînés (ResNet50)
     "torchvision>=0.26.0",
 ]

@@ -5,8 +5,38 @@ Projet 10 — Labellisez et appliquez des approches semi-supervisées en traitem
 Auteur : David MEDRAGH
 Date : Mai 2026
 
+Description :
+    Ce script génère un fichier PowerPoint (.pptx) résumant les résultats de
+    l'exploration du dataset d'IRM cérébrales réalisée dans le notebook
+    projet10_etape1_exploration.ipynb.
+
+    Le template visuel reprend le style du projet 9 (palette bleu profond / or,
+    barre de titre numérotée, footer avec logos, KPI cards, séparateurs de section).
+
+Slides produites :
+    1. Couverture
+    2. Sommaire (3 colonnes : Exploration / Vérification / Bilan)
+    3. Séparateur EXPLORATION (avec diagramme de stack technique)
+    4. Contexte & Mission
+    5. Dataset — Vue d'ensemble (KPI cards)
+    6. Écarts entre l'énoncé et le dataset réel (tableau)
+    7. Séparateur VÉRIFICATION
+    8. Vérification technique — Scan complet (checks + tableau)
+    9. Échantillon visuel (grille 3×5 images)
+   10. Séparateur BILAN
+   11. Synthèse & Prochaines étapes (definition of done)
+
+Dépendances :
+    - python-pptx
+    - Logos dans doc/logo/ (logo_CurelyticsIA.png, logo_openclassrooms.png)
+    - Échantillon visuel dans doc/dataset_preview/ (généré par le notebook)
+    - Diagramme stack technique dans doc/png/
+
 Usage :
     uv run python scripts/generate_pptx_etape1.py
+
+Sortie :
+    livrables/projet10_etape1_exploration.pptx
 """
 
 import warnings
