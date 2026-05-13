@@ -51,6 +51,14 @@
     - [Cas d'usage de l'exploration](#cas-dusage-de-lexploration)
   - [Livrables produits](#livrables-produits)
 - [Étape 2 — Prétraitez et extrayez les features](#étape-2--prétraitez-et-extrayez-les-features)
+  - [Objectif](#objectif)
+  - [Modèle et preprocessing](#modèle-et-preprocessing)
+  - [Dataset unifié](#dataset-unifié)
+  - [Résultats de l'extraction](#résultats-de-lextraction)
+  - [Outils utilisés](#outils-utilisés)
+  - [Sauvegarde](#sauvegarde)
+  - [Tableau exploitable](#tableau-exploitable)
+  - [Livrables produits](#livrables-produits-1)
 - [Étape 3 — Réalisez une analyse non supervisée](#étape-3--réalisez-une-analyse-non-supervisée)
 - [Étape 4 — Appliquez une méthode semi-supervisée](#étape-4--appliquez-une-méthode-semi-supervisée)
 
@@ -335,7 +343,7 @@ Cette dernière vue de synthèse replace la stack technique dans une logique de 
 | Livrable | Chemin |
 |----------|--------|
 | Notebook d'exploration | `projet10_etape1_exploration.ipynb` |
-| Support de présentation | `livrables/projet10_etape1_exploration.pptx` |
+| Support de présentation | `livrables/projet10_presentation.pptx` |
 | Échantillon visuel | `doc/dataset_preview/echantillon_visuel_etape1.png` |
 | Infographie d'architecture détaillée | `doc/png/architecture_detaillé_étape1.png` |
 | Vue d'ensemble de la stack technique | `doc/png/stack_technique_readme_etape1.png` |
@@ -346,7 +354,79 @@ Cette dernière vue de synthèse replace la stack technique dans une logique de 
 
 ## Étape 2 — Prétraitez et extrayez les features
 
-*À compléter.*
+### Objectif
+
+Dans cette étape, j'ai préparé les images (redimensionnement, normalisation) et utilisé un modèle pré-entraîné (ResNet50) pour extraire des embeddings visuels. L'objectif est d'obtenir un vecteur de features pour chaque image, sauvegardé dans un tableau exploitable.
+
+### Modèle et preprocessing
+
+| Choix | Détail |
+|-------|--------|
+| Modèle | ResNet50 (`ResNet50_Weights.DEFAULT`) — poids ImageNet |
+| Preprocessing | `weights.transforms()` — pipeline officiel (Resize 232, CenterCrop 224, Normalize ImageNet) |
+| Extraction | Sortie `avgpool` via `model.fc = nn.Identity()` → vecteur 2 048-d par image |
+| Couches gelées | `requires_grad=False` sur tous les paramètres |
+| Mode inférence | `model.eval()` + `torch.no_grad()` |
+| Device | CPU (GPU non disponible) — extraction en ~108 secondes |
+
+### Dataset unifié
+
+J'ai construit un DataFrame unique regroupant les 1 506 images avec des métadonnées complètes :
+
+| Colonne | Contenu |
+|---------|---------|
+| `path` | Chemin complet de l'image |
+| `filename` | Nom du fichier |
+| `dossier` | cancer / normal / sans_label |
+| `label_name` | "cancer" / "normal" / None |
+| `label_id` | 0 / 1 / `pd.NA` (nullable integer) |
+| `is_labeled` | True / False |
+
+### Résultats de l'extraction
+
+| Métrique | Valeur |
+|----------|--------|
+| Images traitées | 1 506 / 1 506 |
+| Dimension features | (1 506, 2 048) |
+| NaN | 0 |
+| Inf | 0 |
+| Min | 0.0000 |
+| Max | 8.1477 |
+| Mean | 0.1007 |
+| Std | 0.3043 |
+
+### Outils utilisés
+
+| Outil | Usage dans cette étape |
+|-------|----------------------|
+| **torchvision** | Modèle ResNet50, preprocessing officiel, DataLoader |
+| **OpenCV (cv2)** | Recommandé par l'école — vérification visuelle (chargement brute vs preprocessed) |
+| **PIL (Pillow)** | Ouverture des images dans le Dataset custom |
+| **numpy** | Stockage et manipulation des vecteurs de features |
+| **pandas** | DataFrame unifié de métadonnées |
+| **matplotlib** | Visualisation de la vérification post-preprocessing |
+
+### Sauvegarde
+
+Les résultats sont sauvegardés dans `data/features/` :
+
+| Fichier | Contenu |
+|---------|---------|
+| `features.npy` | Matrice numpy (1 506, 2 048) |
+| `metadata.csv` | DataFrame à 6 colonnes (path, filename, dossier, label_name, label_id, is_labeled) |
+
+### Tableau exploitable
+
+Le notebook affiche un DataFrame concaténé de 1 506 lignes × 2 054 colonnes (6 métadonnées + 2 048 features) : c'est le "tableau exploitable" demandé par l'école.
+
+### Livrables produits
+
+| Livrable | Chemin |
+|----------|--------|
+| Notebook d'extraction | `projet10_etape2_features.ipynb` |
+| Support de présentation | `livrables/projet10_presentation.pptx` |
+| Matrice de features | `data/features/features.npy` |
+| Métadonnées | `data/features/metadata.csv` |
 
 ## Étape 3 — Réalisez une analyse non supervisée
 

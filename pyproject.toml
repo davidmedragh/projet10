@@ -14,6 +14,8 @@ dependencies = [
     "matplotlib>=3.10.9",
     # Calcul numérique : manipulation de tableaux, opérations sur les pixels
     "numpy>=2.4.4",
+    # Traitement d'images : redimensionnement, filtres, conversion de couleurs (recommandé par l'école)
+    "opencv-python>=4.13.0.92",
     # DataFrames : tableaux récapitulatifs, agrégations par dossier
     "pandas>=3.0.3",
     # Ouverture et vérification technique des images (dimensions, mode, intégrité)
