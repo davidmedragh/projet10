@@ -1,5 +1,9 @@
 # Projet 10 — Labellisez et appliquez des approches semi-supervisées en traitement d'images
 
+<p align="center">
+  <img src="doc/logo/logo_CurelyticsIA.png" alt="Logo CurelyticsIA" width="260">
+</p>
+
 **Auteur :** David MEDRAGH  
 **Date :** Mai 2026  
 **Durée estimée :** 40 heures
