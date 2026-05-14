@@ -1,0 +1,41 @@
+@startuml etape3_diagramme_etats_cycle_image_vers_pseudo_label
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam state {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  FontColor #0B2A45
+  StartColor #2E7D32
+  EndColor #C62828
+}
+
+title Etape 3 - Diagramme d'etats du cycle d'une image vers son pseudo-label
+right footer David MEDRAGH projet10
+
+[*] --> Feature_chargee
+
+state "Feature chargee" as Feature_chargee
+state "Feature standardisee" as Feature_standardisee
+state "Projection PCA / t-SNE" as Projection
+state "Cluster assigne" as Cluster_assigne
+state "Image fortement labellisee" as Label_fort
+state "Image non labellisee" as Sans_label
+state "Pseudo-label attribue" as Pseudo_label
+state "Point bruit / non assigne" as Bruit
+
+Feature_chargee --> Feature_standardisee : StandardScaler
+Feature_standardisee --> Projection : PCA / t-SNE
+Projection --> Cluster_assigne : K-Means ou DBSCAN
+Cluster_assigne --> Label_fort : Si label radiologue disponible
+Cluster_assigne --> Sans_label : Si aucune verite terrain
+Label_fort --> [*] : Sert a l'ARI et au mapping
+Sans_label --> Pseudo_label : Cluster mappe vers cancer / normal
+Sans_label --> Bruit : DBSCAN = -1
+Pseudo_label --> [*] : Sauvegarde dans metadata_weak_labels.csv
+Bruit --> [*] : Reste sans weak_label
+
+@enduml

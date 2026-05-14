@@ -1,0 +1,90 @@
+@startuml etape3_diagramme_composants_architecture_clustering
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam ArrowThickness 1.2
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam folder {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam node {
+  BackgroundColor #F2F8FC
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam component {
+  BackgroundColor #E8F4F8
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+skinparam database {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+
+title Etape 3 - Diagramme de composants de l'architecture de clustering
+right footer David MEDRAGH projet10
+
+package "Entrees de l'etape 3" #EAF6FF {
+  folder "data/features" as input_dir #F4FBFF {
+    artifact "features.npy\n1506 x 2048" as in_features #FFF0CC
+    artifact "metadata.csv\n100 labels forts\n1406 sans label" as in_meta #FFF7E2
+  }
+}
+
+package "Notebook de clustering" #EDF7FF {
+  component "projet10_etape3_clustering.ipynb" as nb3 #DDEFFA
+  component "StandardScaler" as scaler #EAFBF2
+  component "PCA 2D / PCA 50D" as pca #EEF8FF
+  component "t-SNE 2D" as tsne #F4EEFF
+  component "K-Means\nk = 2" as kmeans #ECF7EE
+  component "DBSCAN\nsur PCA 50D" as dbscan #FCEFE8
+  component "ARI\n100 labels forts uniquement" as ari #FFF4DA
+  component "Mapping cluster -> classe" as mapping #EAFBF2
+}
+
+package "Sorties et restitution" #FFF7E8 {
+  folder "data/features" as out_dir #FFF8EC {
+    artifact "metadata_weak_labels.csv\n1406 weak_label" as weak_csv #FFF0CC
+  }
+  artifact "graphes 2D\nPCA et t-SNE" as plots #EAF6FF
+  artifact "README.md" as out_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as out_pptx #FFF0CC
+}
+
+in_features --> nb3 : Chargement des embeddings
+in_meta --> nb3 : Chargement des metadonnees
+nb3 --> scaler : Standardisation
+scaler --> pca : Reduction lineaire
+pca --> tsne : Projection non lineaire
+scaler --> kmeans : Clustering a 2 groupes
+pca --> dbscan : Clustering par densite
+in_meta --> ari : Sous-ensemble fortement labellise
+kmeans --> ari : Labels de cluster
+dbscan --> ari : Labels de cluster / bruit
+ari --> mapping : Evaluation comparative
+kmeans --> mapping : Clusters retenus
+mapping --> weak_csv : Attribution des pseudo-labels
+pca --> plots : PCA 2D
+tsne --> plots : t-SNE 2D
+plots --> out_readme : Figures et commentaires
+weak_csv --> out_readme : Jeu faiblement labellise
+weak_csv --> out_pptx : Resultats de l'etape 3
+
+@enduml

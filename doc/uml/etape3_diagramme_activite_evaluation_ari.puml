@@ -1,0 +1,40 @@
+@startuml etape3_diagramme_activite_evaluation_ari
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 3 - Diagramme d'activite de l'evaluation par ARI
+right footer David MEDRAGH projet10
+
+start
+:Charger metadata.csv;
+:Filtrer les 100 images fortement labellisees;
+:Construire y_true a partir des labels radiologues;
+:Recuperer y_pred de K-Means sur ce sous-ensemble;
+:Calculer ARI_KMeans;
+:Recuperer y_pred de DBSCAN sur ce sous-ensemble;
+:Calculer ARI_DBSCAN;
+if (ARI_KMeans > ARI_DBSCAN ?) then (Oui)
+  :Retenir K-Means comme base de pseudo-labellisation;
+else (Non)
+  :Documenter un meilleur score alternatif;
+endif
+:Commenter les limites d'un ARI modere;
+:Rappeler que l'ARI n'est jamais calcule sur les 1406 sans label;
+stop
+
+@enduml

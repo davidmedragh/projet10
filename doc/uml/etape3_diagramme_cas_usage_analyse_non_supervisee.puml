@@ -1,0 +1,55 @@
+@startuml etape3_diagramme_cas_usage_analyse_non_supervisee
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam actor {
+  BorderColor #145A86
+  BackgroundColor #EEF7FB
+  FontColor #0B2A45
+}
+skinparam usecase {
+  BorderColor #145A86
+  BackgroundColor #EAF6FF
+  FontColor #0B2A45
+}
+
+title Etape 3 - Diagramme de cas d'usage de l'analyse non supervisee
+right footer David MEDRAGH projet10
+
+left to right direction
+actor "Data Scientist\njunior" as DS
+
+rectangle "Etape 3 - Clustering" {
+  usecase "Standardiser\nles features" as UC1
+  usecase "Reduire la dimension\navec PCA" as UC2
+  usecase "Visualiser avec\nt-SNE" as UC3
+  usecase "Tester K-Means" as UC4
+  usecase "Tester DBSCAN" as UC5
+  usecase "Evaluer avec l'ARI\nsur labels forts" as UC6
+  usecase "Mapper cluster -> classe" as UC7
+  usecase "Attribuer des\npseudo-labels" as UC8
+  usecase "Conserver la separation\nforts / faibles" as UC9
+  usecase "Documenter les\nresultats" as UC10
+}
+
+DS --> UC1
+DS --> UC2
+DS --> UC3
+DS --> UC4
+DS --> UC5
+DS --> UC6
+DS --> UC7
+DS --> UC8
+DS --> UC9
+DS --> UC10
+
+UC8 .> UC7 : <<include>>
+UC6 .> UC4 : <<include>>
+UC6 .> UC5 : <<include>>
+UC10 .> UC6 : <<include>>
+UC10 .> UC9 : <<include>>
+
+@enduml

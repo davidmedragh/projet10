@@ -1,0 +1,39 @@
+@startuml etape3_diagramme_activite_labellisation_faible_seperee
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 3 - Diagramme d'activite de la pseudo-labellisation separee
+right footer David MEDRAGH projet10
+
+start
+:Retenir la methode de clustering la plus exploitable;
+:Isoler les 100 labels forts pour le vote majoritaire;
+:Mapper cluster 0 / cluster 1 vers cancer / normal;
+:Isoler les 1406 images non labellisees;
+if (La methode retenue attribue un cluster ?) then (Oui)
+  :Transformer le cluster en weak_label;
+  :Construire metadata_weak_labels.csv;
+else (Non)
+  :Conserver l'image sans pseudo-label;
+endif
+:Sauvegarder le jeu faiblement labellise dans un fichier distinct;
+:Laisser metadata.csv intact et non modifie;
+:Documenter la separation stricte des deux jeux;
+stop
+
+@enduml

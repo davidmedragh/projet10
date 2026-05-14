@@ -1,0 +1,51 @@
+@startuml etape3_diagramme_sequence_pipeline_clustering
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam sequence {
+  ArrowColor #145A86
+  LifeLineBorderColor #145A86
+  LifeLineBackgroundColor #F7FBFD
+  ParticipantBorderColor #145A86
+  ParticipantBackgroundColor #EAF6FF
+  ActorBorderColor #145A86
+  ActorBackgroundColor #EEF7FB
+}
+
+title Etape 3 - Diagramme de sequence du pipeline de clustering
+right footer David MEDRAGH projet10
+
+participant "Notebook\netape 3" as NB
+participant "features.npy" as FEAT
+participant "metadata.csv" as META
+participant "StandardScaler" as SCALER
+participant "PCA" as PCA
+participant "t-SNE" as TSNE
+participant "K-Means" as KM
+participant "DBSCAN" as DB
+participant "ARI" as ARI
+participant "metadata_weak_labels.csv" as WEAK
+
+NB -> FEAT : Charger les embeddings
+FEAT --> NB : Matrice 1506 x 2048
+NB -> META : Charger les metadonnees
+META --> NB : 100 labels forts + 1406 sans label
+NB -> SCALER : Standardiser les features
+SCALER --> NB : features_scaled
+NB -> PCA : PCA 2D + PCA 50D
+PCA --> NB : Projections et variance expliquee
+NB -> TSNE : t-SNE sur PCA 50D
+TSNE --> NB : Projection 2D
+NB -> KM : Appliquer k = 2
+KM --> NB : cluster_kmeans
+NB -> DB : Appliquer DBSCAN
+DB --> NB : cluster_dbscan / bruit
+NB -> ARI : Evaluer sur 100 labels forts
+ARI --> NB : scores comparatifs
+NB -> WEAK : Sauvegarder 1406 weak_label
+WEAK --> NB : Fichier separe pret pour l'etape 4
+
+@enduml

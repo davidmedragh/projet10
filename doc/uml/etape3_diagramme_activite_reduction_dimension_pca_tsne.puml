@@ -1,0 +1,41 @@
+@startuml etape3_diagramme_activite_reduction_dimension_pca_tsne
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 3 - Diagramme d'activite de la reduction de dimension PCA et t-SNE
+right footer David MEDRAGH projet10
+
+start
+:Recevoir features standardisees;
+fork
+  :Appliquer PCA(n_components = 2);
+  :Obtenir une projection 2D globale;
+  :Tracer le nuage PCA avec labels forts et sans label;
+fork again
+  :Appliquer PCA(n_components = 100);
+  :Mesurer la variance expliquee cumulative;
+  :Choisir 50 composantes comme compromis;
+  :Projeter les features en PCA 50D;
+  :Appliquer t-SNE 2D sur PCA 50D;
+  :Tracer le nuage t-SNE pour visualisation;
+end fork
+:Comparer les deux vues 2D;
+:Rappeler que t-SNE n'est pas une base de decision pour le clustering;
+stop
+
+@enduml

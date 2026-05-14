@@ -1,0 +1,43 @@
+@startuml etape3_diagramme_activite_clustering_kmeans_dbscan
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 3 - Diagramme d'activite du clustering K-Means et DBSCAN
+right footer David MEDRAGH projet10
+
+start
+:Recevoir features standardisees et PCA 50D;
+fork
+  :Lancer K-Means sur les 2048 dimensions standardisees;
+  :Fixer k = 2 selon la consigne;
+  :Obtenir deux clusters de tailles 582 et 924;
+fork again
+  :Lancer DBSCAN sur l'espace PCA 50D;
+  :Fixer eps et min_samples;
+  :Obtenir 1 cluster principal + bruit;
+  if (Points bruit presents ?) then (Oui)
+    :Marquer les points -1 comme non assignes;
+  else (Non)
+    :Conserver uniquement les clusters denses;
+  endif
+end fork
+:Projeter les clusters sur PCA 2D et t-SNE 2D;
+:Comparer separation, stabilite et couverture;
+stop
+
+@enduml

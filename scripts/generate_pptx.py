@@ -59,6 +59,9 @@ ETAPE2_ARCHITECTURE_PATH = PROJECT_ROOT / "doc" / "png" / "projet10_etape2_archi
 ETAPE2_RESULTS_PATH = PROJECT_ROOT / "doc" / "png" / "projet10_etape2_architecture_detaillee.png"
 PREPROCESS_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape2_diagramme_activite_pipeline_preprocessing_resnet50.png"
 OUTPUTS_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape2_diagramme_package_structure_sorties_features.png"
+ETAPE3_ARCHITECTURE_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_composants_architecture_clustering.png"
+ETAPE3_REDUCTION_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_reduction_dimension_pca_tsne.png"
+ETAPE3_WEAKLABEL_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_labellisation_faible_seperee.png"
 
 SLIDE_W = Inches(13.333)
 SLIDE_H = Inches(7.5)
@@ -543,7 +546,8 @@ def build_presentation():
     add_separator(prs, blank,
                   "ÉTAPE 3 — CLUSTERING",
                   "De la haute dimension aux pseudo-labels",
-                  "PCA, t-SNE, K-Means, DBSCAN — labellisation faible")
+                  "PCA, t-SNE, K-Means, DBSCAN — labellisation faible",
+                  ETAPE3_ARCHITECTURE_UML_PATH)
 
     # ═══════════════════════════════════════════
     # SLIDE 12 — RÉDUCTION DE DIMENSION
@@ -566,12 +570,23 @@ def build_presentation():
     add_kpi_card(s, Inches(7.0), Inches(1.6), "2 048→50", "Réduction PCA", OR_ACCENT)
     add_kpi_card(s, Inches(10.0), Inches(1.6), "46 %", "Variance (50D)", BLEU_ACCENT)
 
-    add_content_block(s, "t-SNE 2D (visualisation uniquement)", [
-        "Appliqué sur PCA 50D (pas sur 2048D brutes)",
-        "Préserve les voisinages locaux",
-        "⚠ Pas utilisé pour le clustering",
-        "Structure visible : cancer et normal tendent à se regrouper",
-    ], left=Inches(7.0), top=Inches(3.3), width=Inches(5.5))
+    tf = add_textbox(s, Inches(6.95), Inches(3.05), Inches(5.4), Inches(0.4))
+    set_para(tf, "Workflow de reduction et visualisation", size=Pt(15),
+             color=BLEU_PRINCIPAL, bold=True)
+
+    if ETAPE3_REDUCTION_UML_PATH.exists():
+        s.shapes.add_picture(
+            str(ETAPE3_REDUCTION_UML_PATH),
+            Inches(6.95), Inches(3.45),
+            width=Inches(5.35),
+        )
+    else:
+        add_content_block(s, "t-SNE 2D (visualisation uniquement)", [
+            "Appliqué sur PCA 50D (pas sur 2048D brutes)",
+            "Préserve les voisinages locaux",
+            "⚠ Pas utilisé pour le clustering",
+            "Structure visible : cancer et normal tendent à se regrouper",
+        ], left=Inches(7.0), top=Inches(3.3), width=Inches(5.5))
 
     slide_footer(s)
 
@@ -596,12 +611,23 @@ def build_presentation():
         "Cluster 1 → normal (48 normal vs 28 cancer)",
     ], left=Inches(0.8), top=Inches(3.5), width=Inches(5.5))
 
-    add_content_block(s, "Pseudo-labellisation (K-Means)", [
-        "1 406 images non labellisées → pseudo-labels",
-        "558 « cancer » / 848 « normal »",
-        "Sauvegardé dans metadata_weak_labels.csv",
-        "Séparé du jeu fortement labellisé",
-    ], left=Inches(7.0), top=Inches(3.5), width=Inches(5.5))
+    tf = add_textbox(s, Inches(6.95), Inches(3.28), Inches(5.4), Inches(0.4))
+    set_para(tf, "Pseudo-labellisation séparée", size=Pt(15),
+             color=BLEU_PRINCIPAL, bold=True)
+
+    if ETAPE3_WEAKLABEL_UML_PATH.exists():
+        s.shapes.add_picture(
+            str(ETAPE3_WEAKLABEL_UML_PATH),
+            Inches(6.95), Inches(3.62),
+            width=Inches(5.15),
+        )
+    else:
+        add_content_block(s, "Pseudo-labellisation (K-Means)", [
+            "1 406 images non labellisées → pseudo-labels",
+            "558 « cancer » / 848 « normal »",
+            "Sauvegardé dans metadata_weak_labels.csv",
+            "Séparé du jeu fortement labellisé",
+        ], left=Inches(7.0), top=Inches(3.5), width=Inches(5.5))
 
     add_kpi_card(s, Inches(0.8), Inches(5.8), "0.1538", "ARI K-Means", OR_ACCENT)
     add_kpi_card(s, Inches(3.6), Inches(5.8), "1 406", "Pseudo-labellisées", BLEU_ACCENT)

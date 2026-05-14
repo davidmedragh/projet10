@@ -1,0 +1,46 @@
+@startuml etape3_diagramme_activite_workflow_analyse_non_supervisee
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 3 - Diagramme d'activite du workflow d'analyse non supervisee
+right footer David MEDRAGH projet10
+
+start
+:Charger features.npy et metadata.csv;
+:Verifier la coherence des 1 506 lignes;
+:Standardiser les 2 048 features avec StandardScaler;
+:Produire une PCA 2D pour visualiser la structure globale;
+:Produire une PCA 50D pour t-SNE et DBSCAN;
+:Appliquer t-SNE 2D a des fins de visualisation;
+:Lancer K-Means avec k = 2 sur les features standardisees;
+:Lancer DBSCAN sur l'espace PCA 50D;
+:Projeter les clusters sur PCA 2D et t-SNE 2D;
+:Filtrer les 100 images fortement labellisees;
+:Calculer l'ARI pour chaque methode sur ce sous-ensemble;
+if (Quelle methode est la plus exploitable ?) then (K-Means)
+  :Retenir K-Means pour la pseudo-labellisation;
+else (DBSCAN)
+  :Conserver DBSCAN uniquement en comparaison exploratoire;
+endif
+:Mapper les clusters K-Means vers cancer / normal par vote majoritaire;
+:Attribuer des weak_label aux 1 406 images non labellisees;
+:Sauvegarder metadata_weak_labels.csv separement;
+:Documenter les limites et preparer l'etape 4;
+stop
+
+@enduml

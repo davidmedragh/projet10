@@ -1,0 +1,55 @@
+@startuml etape3_diagramme_package_structure_sorties_clustering
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Etape 3 - Diagramme de packages des entrees et sorties clustering
+right footer David MEDRAGH projet10
+
+package "data/features" #EAF6FF {
+  artifact "features.npy" as pk_feat #FFF0CC
+  artifact "metadata.csv\njeu fortement labellise" as pk_meta #FFF7E2
+  artifact "metadata_weak_labels.csv\njeu faiblement labellise" as pk_weak #FFF0CC
+}
+
+package "Notebook et documentation" #EEF7FB {
+  artifact "projet10_etape3_clustering.ipynb" as pk_nb #EAF6FF
+  artifact "README.md" as pk_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as pk_pptx #FFF0CC
+}
+
+package "Sorties analytiques" #F4FBF7 {
+  artifact "Graphes PCA 2D" as pk_pca #EAFBF2
+  artifact "Graphes t-SNE 2D" as pk_tsne #EAFBF2
+  artifact "Tableau ARI\nK-Means vs DBSCAN" as pk_ari #FFF4DA
+}
+
+pk_feat --> pk_nb
+pk_meta --> pk_nb
+pk_nb --> pk_pca
+pk_nb --> pk_tsne
+pk_nb --> pk_ari
+pk_nb --> pk_weak
+pk_pca --> pk_readme
+pk_tsne --> pk_readme
+pk_ari --> pk_readme
+pk_weak --> pk_readme
+pk_pca --> pk_pptx
+pk_ari --> pk_pptx
+pk_weak --> pk_pptx
+
+@enduml

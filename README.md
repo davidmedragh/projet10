@@ -96,6 +96,18 @@
   - [Mapping cluster → classe](#mapping-cluster--classe)
   - [Pseudo-labellisation](#pseudo-labellisation)
   - [Discussion](#discussion)
+  - [Diagrammes UML](#diagrammes-uml-2)
+    - [Workflow global de l'analyse non supervisée](#workflow-global-de-lanalyse-non-supervisée)
+    - [Architecture technique du clustering](#architecture-technique-du-clustering)
+    - [Standardisation des features](#standardisation-des-features-1)
+    - [Réduction de dimension PCA et t-SNE](#réduction-de-dimension-pca-et-t-sne)
+    - [Clustering K-Means et DBSCAN](#clustering-k-means-et-dbscan)
+    - [Évaluation par ARI](#évaluation-par-ari)
+    - [Pseudo-labellisation séparée](#pseudo-labellisation-séparée)
+    - [Séquence du pipeline de clustering](#séquence-du-pipeline-de-clustering)
+    - [Cycle d'une image vers son pseudo-label](#cycle-dune-image-vers-son-pseudo-label)
+    - [Structure des sorties clustering](#structure-des-sorties-clustering)
+    - [Cas d'usage de l'analyse non supervisée](#cas-dusage-de-lanalyse-non-supervisée)
   - [Livrables produits](#livrables-produits-2)
 - [Étape 4 — Appliquez une méthode semi-supervisée](#étape-4--appliquez-une-méthode-semi-supervisée)
 
@@ -735,12 +747,106 @@ Le résultat est sauvegardé dans `data/features/metadata_weak_labels.csv`, un f
 **Perspective pour l'étape 4 :**
 Les pseudo-labels serviront de point de départ à l'apprentissage semi-supervisé. L'étape 4 affinera ces prédictions en exploitant conjointement les 100 labels forts et les 1 406 pseudo-labels.
 
+### Diagrammes UML
+
+Pour documenter l'étape 3, j'ai préparé une série de diagrammes UML en PlantUML. Ils montrent la logique de standardisation, de réduction de dimension, de clustering, d'évaluation par ARI et de pseudo-labellisation, tout en gardant la séparation stricte entre labels forts et labels faibles.
+
+#### Workflow global de l'analyse non supervisée
+
+Ce diagramme d'activité synthétise le déroulé complet de l'étape 3, du chargement des features jusqu'à la sauvegarde du jeu faiblement labellisé.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_workflow_analyse_non_supervisee.png" alt="Workflow global de l analyse non supervisee pour l etape 3" width="100%">
+</p>
+
+#### Architecture technique du clustering
+
+Ce diagramme de composants montre comment le notebook orchestre `features.npy`, `metadata.csv`, la standardisation, PCA, t-SNE, K-Means, DBSCAN, l'ARI et `metadata_weak_labels.csv`.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_composants_architecture_clustering.png" alt="Architecture technique du clustering pour l etape 3" width="100%">
+</p>
+
+#### Standardisation des features
+
+Ce diagramme d'activité détaille la transformation des 2 048 features par `StandardScaler`, avec contrôle de la shape et validation du centrage-réduction.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_standardisation_features.png" alt="Standardisation des features pour l etape 3" width="100%">
+</p>
+
+#### Réduction de dimension PCA et t-SNE
+
+Ce diagramme d'activité explicite la double logique de réduction : une PCA 2D pour la vue globale, puis une PCA 50D suivie d'un t-SNE pour la visualisation non linéaire.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_reduction_dimension_pca_tsne.png" alt="Reduction de dimension PCA et t-SNE pour l etape 3" width="100%">
+</p>
+
+#### Clustering K-Means et DBSCAN
+
+Ce diagramme d'activité compare les deux branches de clustering testées dans cette étape : K-Means avec `k=2` et DBSCAN dans l'espace PCA 50D.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_clustering_kmeans_dbscan.png" alt="Clustering K-Means et DBSCAN pour l etape 3" width="100%">
+</p>
+
+#### Évaluation par ARI
+
+Ce diagramme d'activité rappelle que l'ARI est calculé uniquement sur les 100 images fortement labellisées, jamais sur les 1 406 images sans vérité terrain.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_evaluation_ari.png" alt="Evaluation par ARI pour l etape 3" width="100%">
+</p>
+
+#### Pseudo-labellisation séparée
+
+Ce diagramme d'activité met en avant la séparation stricte entre le jeu fortement labellisé (`metadata.csv`) et le jeu faiblement labellisé (`metadata_weak_labels.csv`).
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_activite_labellisation_faible_seperee.png" alt="Pseudo-labellisation separee pour l etape 3" width="100%">
+</p>
+
+#### Séquence du pipeline de clustering
+
+Ce diagramme de séquence représente les interactions entre le notebook, les fichiers d'entrée, les algorithmes de réduction, les méthodes de clustering, l'ARI et la sortie de pseudo-labels.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_sequence_pipeline_clustering.png" alt="Sequence du pipeline de clustering pour l etape 3" width="100%">
+</p>
+
+#### Cycle d'une image vers son pseudo-label
+
+Ce diagramme d'états suit une image individuelle depuis sa feature chargée jusqu'à son éventuel pseudo-label, ou jusqu'au statut de bruit si elle n'est pas assignée par DBSCAN.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_etats_cycle_image_vers_pseudo_label.png" alt="Cycle d une image vers son pseudo-label pour l etape 3" width="100%">
+</p>
+
+#### Structure des sorties clustering
+
+Ce diagramme de packages relie les entrées `features.npy` et `metadata.csv`, le notebook de clustering, les graphes 2D, l'ARI et le fichier `metadata_weak_labels.csv`.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_package_structure_sorties_clustering.png" alt="Structure des sorties clustering pour l etape 3" width="100%">
+</p>
+
+#### Cas d'usage de l'analyse non supervisée
+
+Ce diagramme de cas d'usage résume les actions principales réalisées dans l'étape 3 du point de vue du Data Scientist junior.
+
+<p align="center">
+  <img src="doc/uml/png/etape3_diagramme_cas_usage_analyse_non_supervisee.png" alt="Cas d usage de l analyse non supervisee pour l etape 3" width="100%">
+</p>
+
 ### Livrables produits
 
 | Fichier | Description |
 |---------|-------------|
 | `projet10_etape3_clustering.ipynb` | Notebook complet : standardisation, PCA, t-SNE, K-Means, DBSCAN, ARI, pseudo-labellisation |
 | `data/features/metadata_weak_labels.csv` | 1 406 images avec pseudo-labels (jeu faiblement labellisé, séparé) |
+| `doc/uml/` | Sources PlantUML des diagrammes de l'étape 3 |
+| `doc/uml/png/` | Exports PNG des diagrammes de l'étape 3 |
 
 ## Étape 4 — Appliquez une méthode semi-supervisée
 
