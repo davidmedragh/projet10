@@ -52,6 +52,10 @@ LOGO_CURELYTICSAI = PROJECT_ROOT / "doc" / "logo" / "logo_CurelyticsIA.png"
 LOGO_OC = PROJECT_ROOT / "doc" / "logo" / "logo_openclassrooms.png"
 ECHANTILLON_PATH = PROJECT_ROOT / "doc" / "dataset_preview" / "echantillon_visuel_etape1.png"
 STACK_TECHNIQUE_PATH = PROJECT_ROOT / "doc" / "png" / "stack_technique_slide_etape1.png"
+ETAPE2_ARCHITECTURE_PATH = PROJECT_ROOT / "doc" / "png" / "projet10_etape2_architecture_generale_2.png"
+ETAPE2_RESULTS_PATH = PROJECT_ROOT / "doc" / "png" / "projet10_etape2_architecture_detaillee.png"
+PREPROCESS_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape2_diagramme_activite_pipeline_preprocessing_resnet50.png"
+OUTPUTS_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape2_diagramme_package_structure_sorties_features.png"
 
 SLIDE_W = Inches(13.333)
 SLIDE_H = Inches(7.5)
@@ -410,7 +414,8 @@ def build_presentation():
     add_separator(prs, blank,
                   "ÉTAPE 2 — FEATURES",
                   "Des images brutes aux embeddings visuels",
-                  "Preprocessing officiel ResNet50 — 2 048 features par image")
+                  "Preprocessing officiel ResNet50 — 2 048 features par image",
+                  ETAPE2_ARCHITECTURE_PATH)
 
     # ═══════════════════════════════════════════
     # SLIDE 8 — PIPELINE DE PREPROCESSING
@@ -422,27 +427,35 @@ def build_presentation():
         "weights = ResNet50_Weights.DEFAULT",
         "preprocess = weights.transforms()",
         "Pipeline unique — pas de transforms parallèle",
-    ], left=Inches(0.8), top=Inches(1.6), width=Inches(5.5))
+    ], left=Inches(0.8), top=Inches(1.6), width=Inches(4.4))
 
-    add_content_block(s, "Étapes du pipeline", [
-        "Resize(232) — côté court",
-        "CenterCrop(224) — recadrage central 224×224",
-        "ToTensor() → tenseur [0, 1]",
-        "Normalize(mean ImageNet, std ImageNet)",
-    ], left=Inches(7.0), top=Inches(1.6), width=Inches(5.5))
+    if PREPROCESS_UML_PATH.exists():
+        s.shapes.add_picture(
+            str(PREPROCESS_UML_PATH),
+            Inches(5.2), Inches(1.55),
+            width=Inches(7.1),
+        )
+    else:
+        add_content_block(s, "Étapes du pipeline", [
+            "Resize(232) — côté court",
+            "CenterCrop(224) — recadrage central 224×224",
+            "ToTensor() → tenseur [0, 1]",
+            "Normalize(mean ImageNet, std ImageNet)",
+        ], left=Inches(5.4), top=Inches(1.6), width=Inches(6.8))
 
-    add_content_block(s, "Dataset unifié", [
+    add_content_block(s, "Dataset unifié et contrôle visuel", [
         "1 506 images dans un DataFrame unique (6 colonnes de métadonnées)",
         "DataLoader shuffle=False — ordre stable garanti",
         "Vérification visuelle avec OpenCV (brute vs preprocessed)",
-    ], left=Inches(0.8), top=Inches(4.2), width=Inches(5.5))
+        "Batch size = 32 → 48 batches",
+    ], left=Inches(0.8), top=Inches(5.45), width=Inches(6.2))
 
     add_content_block(s, "Outils de l'école", [
         "torchvision — preprocessing officiel + modèle",
         "OpenCV (cv2) — chargement brut + conversion BGR→RGB",
         "PIL (Pillow) — ouverture dans le Dataset custom",
         "numpy, pandas, matplotlib",
-    ], left=Inches(7.0), top=Inches(4.2), width=Inches(5.5))
+    ], left=Inches(7.3), top=Inches(5.45), width=Inches(5.0))
 
     slide_footer(s)
 
@@ -495,16 +508,27 @@ def build_presentation():
         left=Inches(0.8), top=Inches(3.3), width=Inches(5),
     )
 
-    add_content_block(s, "Sauvegarde", [
-        "features.npy — matrice (1 506, 2 048)",
-        "metadata.csv — 6 colonnes de métadonnées",
-        "Tableau exploitable : 1 506 × 2 054 colonnes",
-    ], left=Inches(7.0), top=Inches(3.3), width=Inches(5.5))
+    tf = add_textbox(s, Inches(6.45), Inches(3.05), Inches(5.8), Inches(0.4))
+    set_para(tf, "Synthèse visuelle de l'étape 2", size=Pt(15), color=BLEU_PRINCIPAL, bold=True)
 
-    add_content_block(s, "Métadonnées", [
-        "path, filename, dossier",
-        "label_name, label_id (Int64), is_labeled",
-    ], left=Inches(7.0), top=Inches(5.3), width=Inches(5.5))
+    if ETAPE2_RESULTS_PATH.exists():
+        s.shapes.add_picture(
+            str(ETAPE2_RESULTS_PATH),
+            Inches(6.3), Inches(3.45),
+            width=Inches(6.15),
+        )
+    elif OUTPUTS_UML_PATH.exists():
+        s.shapes.add_picture(
+            str(OUTPUTS_UML_PATH),
+            Inches(6.3), Inches(3.45),
+            width=Inches(6.15),
+        )
+    else:
+        add_content_block(s, "Sauvegarde", [
+            "features.npy — matrice (1 506, 2 048)",
+            "metadata.csv — 6 colonnes de métadonnées",
+            "Tableau exploitable : 1 506 × 2 054 colonnes",
+        ], left=Inches(7.0), top=Inches(3.3), width=Inches(5.5))
 
     slide_footer(s)
 

@@ -1,0 +1,50 @@
+@startuml etape2_diagramme_activite_workflow_extraction_features
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 2 - Diagramme d'activite du workflow d'extraction de features
+right footer David MEDRAGH projet10
+
+start
+:Charger les bibliotheques et les versions;
+:Detecter le device de calcul (CPU ou GPU);
+:Construire le DataFrame unifie des 1 506 images;
+:Associer a chaque image ses metadonnees stables;
+:Charger les poids ResNet50 par defaut;
+:Recuperer le preprocessing officiel avec weights.transforms();
+:Construire le Dataset custom et le DataLoader;
+:Verifier visuellement le pipeline de preprocessing;
+:Charger le modele ResNet50;
+:Geler tous les poids du modele;
+:Passer le modele en mode inference;
+:Remplacer la couche fc par nn.Identity();
+if (GPU disponible ?) then (Oui)
+  :Envoyer les batches vers CUDA;
+else (Non)
+  :Traiter les batches sur CPU;
+endif
+:Extraire les embeddings batch par batch;
+:Concatener les sorties en une matrice unique;
+:Sauvegarder features.npy et metadata.csv;
+:Recharger les fichiers sauvegardes;
+:Verifier shape, NaN, inf et coherence globale;
+:Construire le tableau exploitable final;
+:Rediger la synthese et valider la definition of done;
+stop
+
+@enduml

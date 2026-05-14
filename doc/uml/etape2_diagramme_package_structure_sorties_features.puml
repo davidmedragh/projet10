@@ -1,0 +1,58 @@
+@startuml etape2_diagramme_package_structure_sorties_features
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Etape 2 - Diagramme de packages des entrees et sorties features
+right footer David MEDRAGH projet10
+
+package "data/mri_dataset_brain_cancer_oc" #EAF6FF {
+  package "avec_labels" #EDF7E9 {
+    artifact "cancer" as pk_cancer #FDECEC
+    artifact "normal" as pk_normal #ECF7EE
+  }
+  package "sans_label" #F4EEFF {
+    artifact "images non etiquetees" as pk_unlabeled #F8F3FE
+  }
+}
+
+package "Notebook et documentation" #EEF7FB {
+  artifact "projet10_etape2_features.ipynb" as pk_nb #EAF6FF
+  artifact "README.md" as pk_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as pk_pptx #FFF0CC
+}
+
+package "data/features" #FFF7E8 {
+  artifact "features.npy" as pk_features #FFF0CC
+  artifact "metadata.csv" as pk_meta #FFF7E2
+}
+
+package "Resultat exploitable" #F4FBF7 {
+  artifact "tableau exploitable\n1506 x 2054" as pk_table #EAFBF2
+}
+
+pk_cancer --> pk_nb
+pk_normal --> pk_nb
+pk_unlabeled --> pk_nb
+pk_nb --> pk_features
+pk_nb --> pk_meta
+pk_features --> pk_table
+pk_meta --> pk_table
+pk_table --> pk_readme
+pk_table --> pk_pptx
+
+@enduml

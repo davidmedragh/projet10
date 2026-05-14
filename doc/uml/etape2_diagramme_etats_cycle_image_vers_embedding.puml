@@ -1,0 +1,37 @@
+@startuml etape2_diagramme_etats_cycle_image_vers_embedding
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam state {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  FontColor #0B2A45
+  StartColor #2E7D32
+  EndColor #C62828
+}
+
+title Etape 2 - Diagramme d'etats du cycle image vers embedding
+right footer David MEDRAGH projet10
+
+[*] --> Detectee
+Detectee : Image reperee dans le corpus
+
+Detectee --> Indexee : Ajout au DataFrame unifie
+Indexee --> Ouverte : Lecture via PIL
+Ouverte --> ConvertieRGB : Conversion RGB
+ConvertieRGB --> Preprocessee : weights.transforms()
+Preprocessee --> Batchee : Integration au DataLoader
+Batchee --> Encodee : Forward pass ResNet50
+Encodee --> Vectorisee : Embedding 2048-d
+Vectorisee --> Sauvegardee : Ecriture dans features.npy
+Sauvegardee --> Reliee : Association a metadata.csv
+Reliee --> Validee : Verification shape / NaN / inf
+Validee --> [*]
+
+Ouverte --> ErreurLecture : Echec d'ouverture
+ErreurLecture --> [*]
+
+@enduml

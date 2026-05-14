@@ -56,6 +56,12 @@
   - [Modèle et preprocessing](#modèle-et-preprocessing)
   - [Dataset unifié](#dataset-unifié)
   - [Résultats de l'extraction](#résultats-de-lextraction)
+  - [Synthèses visuelles](#synthèses-visuelles-1)
+    - [Architecture générale de l'étape 2](#architecture-générale-de-létape-2)
+    - [Architecture générale de l'étape 2 — variante](#architecture-générale-de-létape-2--variante)
+    - [Stack technique de l'étape 2 — vue d'ensemble](#stack-technique-de-létape-2--vue-densemble)
+    - [Stack technique détaillée de l'étape 2](#stack-technique-détaillée-de-létape-2)
+    - [Architecture détaillée de l'étape 2](#architecture-détaillée-de-létape-2)
   - [Stack technique de l'étape 2](#stack-technique-de-létape-2)
     - [PyTorch](#pytorch)
     - [torchvision](#torchvision)
@@ -66,6 +72,15 @@
     - [matplotlib](#matplotlib)
   - [Sauvegarde](#sauvegarde)
   - [Tableau exploitable](#tableau-exploitable)
+  - [Diagrammes UML](#diagrammes-uml-1)
+    - [Workflow global d'extraction](#workflow-global-dextraction)
+    - [Architecture technique de l'extraction](#architecture-technique-de-lextraction)
+    - [Pipeline de preprocessing ResNet50](#pipeline-de-preprocessing-resnet50)
+    - [Extraction des embeddings en batch](#extraction-des-embeddings-en-batch)
+    - [Séquence d'extraction des embeddings](#séquence-dextraction-des-embeddings)
+    - [Cycle de vie d'une image vers son embedding](#cycle-de-vie-dune-image-vers-son-embedding)
+    - [Structure logique des sorties features](#structure-logique-des-sorties-features)
+    - [Cas d'usage de l'extraction de features](#cas-dusage-de-lextraction-de-features)
   - [Livrables produits](#livrables-produits-1)
 - [Étape 3 — Réalisez une analyse non supervisée](#étape-3--réalisez-une-analyse-non-supervisée)
 - [Étape 4 — Appliquez une méthode semi-supervisée](#étape-4--appliquez-une-méthode-semi-supervisée)
@@ -414,6 +429,50 @@ J'ai construit un DataFrame unique regroupant les 1 506 images avec des métadon
 | Mean | 0.1007 |
 | Std | 0.3043 |
 
+### Synthèses visuelles
+
+Les infographies ci-dessous complètent le notebook et le support global. Elles donnent une lecture rapide de l'étape 2 sous trois angles : le workflow global, la stack technique mobilisée et la structure détaillée des sorties.
+
+#### Architecture générale de l'étape 2
+
+Cette première vue d'ensemble résume le passage du dataset source vers le DataFrame unifié, le preprocessing officiel de ResNet50, l'extraction des embeddings et les livrables produits.
+
+<p align="center">
+  <img src="doc/png/projet10_etape2_architecture_generale.png" alt="Architecture generale de l etape 2" width="100%">
+</p>
+
+#### Architecture générale de l'étape 2 — variante
+
+Cette variante reprend le même enchaînement avec une présentation plus synthétique, utile pour une lecture rapide en support de présentation.
+
+<p align="center">
+  <img src="doc/png/projet10_etape2_architecture_generale_2.png" alt="Architecture generale de l etape 2 variante" width="100%">
+</p>
+
+#### Stack technique de l'étape 2 — vue d'ensemble
+
+Cette vue recentre l'attention sur l'environnement Python, le notebook, le traitement d'images, l'écosystème PyTorch et la restitution des résultats.
+
+<p align="center">
+  <img src="doc/png/projet10_etape2_stack_technique_generale.png" alt="Stack technique de l etape 2 vue d ensemble" width="100%">
+</p>
+
+#### Stack technique détaillée de l'étape 2
+
+Cette version détaillée explicite davantage les outils mobilisés, la logique d'orchestration du notebook et les composants utilisés pendant l'extraction des features.
+
+<p align="center">
+  <img src="doc/png/projet10_etape2_stack_technique_detaillee.png" alt="Stack technique detaillee de l etape 2" width="100%">
+</p>
+
+#### Architecture détaillée de l'étape 2
+
+Cette vue détaillée met en avant la chronologie complète de l'étape 2, depuis la source de données jusqu'aux fichiers `features.npy` et `metadata.csv`, avec les contrôles appliqués au passage.
+
+<p align="center">
+  <img src="doc/png/projet10_etape2_architecture_detaillee.png" alt="Architecture detaillee de l etape 2" width="100%">
+</p>
+
 ### Stack technique de l'étape 2
 
 #### PyTorch
@@ -469,6 +528,74 @@ Les résultats sont sauvegardés dans `data/features/` :
 
 Le notebook affiche un DataFrame concaténé de 1 506 lignes × 2 054 colonnes (6 métadonnées + 2 048 features) : c'est le "tableau exploitable" demandé par l'école.
 
+### Diagrammes UML
+
+Pour documenter l'etape 2, j'ai prepare plusieurs diagrammes UML en PlantUML. Ils explicitent le pipeline de preprocessing, l'architecture d'extraction, la logique batch et la structure des sorties produites.
+
+#### Workflow global d'extraction
+
+Ce diagramme d'activite synthétise le deroule complet de l'etape 2, depuis le chargement du corpus jusqu'a la validation finale des embeddings.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_activite_workflow_extraction_features.png" alt="Workflow global d extraction de features pour l etape 2" width="100%">
+</p>
+
+#### Architecture technique de l'extraction
+
+Ce diagramme de composants montre comment le notebook orchestre le dataset source, le DataFrame unifie, le preprocessing officiel, le DataLoader, ResNet50 et les fichiers de sortie.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_composants_architecture_extraction_features.png" alt="Architecture technique de l extraction de features pour l etape 2" width="100%">
+</p>
+
+#### Pipeline de preprocessing ResNet50
+
+Ce diagramme d'activite detaille les transformations appliquees a chaque image avant son passage dans ResNet50 : ouverture, conversion RGB, resize, center crop, tensorisation et normalisation.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_activite_pipeline_preprocessing_resnet50.png" alt="Pipeline de preprocessing officiel ResNet50 pour l etape 2" width="100%">
+</p>
+
+#### Extraction des embeddings en batch
+
+Ce diagramme d'activite se concentre sur la phase d'inference : gel des poids, mode eval, passage batch par batch et concatenation de la matrice finale.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_activite_extraction_embeddings_batch.png" alt="Extraction des embeddings en batch pour l etape 2" width="100%">
+</p>
+
+#### Séquence d'extraction des embeddings
+
+Ce diagramme de sequence represente les interactions entre le notebook, le DataFrame de metadonnees, le Dataset custom, le DataLoader, ResNet50, NumPy, pandas et les fichiers de sortie.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_sequence_extraction_embeddings.png" alt="Sequence d extraction des embeddings pour l etape 2" width="100%">
+</p>
+
+#### Cycle de vie d'une image vers son embedding
+
+Ce diagramme d'etats suit une image individuelle depuis sa detection dans le corpus jusqu'a son embedding valide et relie aux metadonnees.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_etats_cycle_image_vers_embedding.png" alt="Cycle de vie d une image vers son embedding pour l etape 2" width="100%">
+</p>
+
+#### Structure logique des sorties features
+
+Ce diagramme de packages relie le corpus source, le notebook de l'etape 2, le dossier `data/features/` et le tableau exploitable final.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_package_structure_sorties_features.png" alt="Structure logique des sorties features de l etape 2" width="100%">
+</p>
+
+#### Cas d'usage de l'extraction de features
+
+Ce diagramme de cas d'usage resume les actions principales realisees pendant l'etape 2 du point de vue du Data Scientist junior.
+
+<p align="center">
+  <img src="doc/uml/png/etape2_diagramme_cas_usage_extraction_features.png" alt="Cas d usage de l extraction de features pour l etape 2" width="100%">
+</p>
+
 ### Livrables produits
 
 | Livrable | Chemin |
@@ -477,6 +604,9 @@ Le notebook affiche un DataFrame concaténé de 1 506 lignes × 2 054 colonnes (
 | Support de présentation | `livrables/projet10_presentation.pptx` |
 | Matrice de features | `data/features/features.npy` |
 | Métadonnées | `data/features/metadata.csv` |
+| Infographies étape 2 | `doc/png/projet10_etape2_*.png` |
+| Sources PlantUML | `doc/uml/` |
+| Exports PNG des diagrammes | `doc/uml/png/` |
 
 ## Étape 3 — Réalisez une analyse non supervisée
 

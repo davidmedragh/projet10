@@ -1,0 +1,59 @@
+@startuml etape2_diagramme_sequence_extraction_embeddings
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam sequence {
+  ArrowColor #145A86
+  LifeLineBorderColor #145A86
+  LifeLineBackgroundColor #F8FBFD
+  ParticipantBorderColor #145A86
+  ParticipantBackgroundColor #EAF6FF
+  ActorBorderColor #145A86
+  ActorBackgroundColor #FFF4DA
+  BoxBackgroundColor #F9FCFE
+  BoxBorderColor #C9DCE8
+}
+
+title Etape 2 - Diagramme de sequence de l'extraction des embeddings
+right footer David MEDRAGH projet10
+
+actor "Notebook\nEtape 2" as NB
+participant "metadata\nDataFrame" as META
+participant "MRIDataset\ncustom" as DS
+participant "DataLoader" as DL
+participant "ResNet50" as RN
+participant "NumPy" as NP
+participant "pandas" as PD
+database "Fichiers image" as IMG
+database "data/features/" as OUT
+
+NB -> META : Construire l'index unifie
+NB -> DS : Initialiser(dataframe, preprocess)
+NB -> DL : Initialiser(dataset, batch_size=32,\nshuffle=False)
+NB -> RN : Charger les poids DEFAULT\net preparer le modele
+
+loop Pour chaque batch
+  NB -> DL : Demander batch suivant
+  DL -> DS : __getitem__(idx)
+  DS -> IMG : Ouvrir l'image via PIL
+  IMG --> DS : Image brute
+  DS --> DL : Tenseur preprocessé + idx
+  DL --> NB : Batch d'images
+  NB -> RN : Forward pass sous no_grad()
+  RN --> NB : Batch de features [batch, 2048]
+  NB -> NP : Convertir et accumuler
+end
+
+NB -> NP : Concatener tous les batches
+NP --> NB : features_array [1506, 2048]
+NB -> OUT : Sauvegarder features.npy
+NB -> PD : Sauvegarder metadata.csv
+PD -> OUT : Ecrire le csv
+NB -> OUT : Recharger les fichiers
+OUT --> NB : features.npy + metadata.csv
+NB -> PD : Construire le tableau exploitable
+
+@enduml

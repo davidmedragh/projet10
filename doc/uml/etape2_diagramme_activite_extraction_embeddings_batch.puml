@@ -1,0 +1,48 @@
+@startuml etape2_diagramme_activite_extraction_embeddings_batch
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #7A4BB7
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #F4EEFF
+  BorderColor #7A4BB7
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #A078D6
+}
+
+title Etape 2 - Diagramme d'activite de l'extraction des embeddings en batch
+right footer David MEDRAGH projet10
+
+start
+:Charger ResNet50 avec les poids par defaut;
+:Appliquer requires_grad = False sur tous les parametres;
+:Passer le modele en mode eval();
+:Remplacer model.fc par nn.Identity();
+:Initialiser la liste all_features;
+while (Batches restants ?) is (Oui)
+  :Lire un batch depuis le DataLoader;
+  :Envoyer les images vers le device;
+  :Entrer dans le contexte torch.no_grad();
+  :Executer le forward pass;
+  :Produire un tenseur [batch, 2048];
+  :Ramener le batch sur CPU;
+  :Convertir en numpy;
+  :Ajouter les features a all_features;
+endwhile (Non)
+:Concatener tous les batches;
+:Obtenir la matrice finale [1506, 2048];
+if (Shape attendue ?) then (Oui)
+  :Valider l'extraction;
+else (Non)
+  :Lever une erreur de coherence;
+endif
+stop
+
+@enduml

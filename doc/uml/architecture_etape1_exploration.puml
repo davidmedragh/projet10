@@ -53,23 +53,23 @@ package "Environnement Virtuel (uv - Python 3.11)" #F3F8FD {
     }
     
     node "Moteur de Restitution" #F9F1DF {
-        component "scripts/generate_pptx_etape1.py\n(python-pptx)" as script_pptx #FFF4DA
+        component "scripts/generate_pptx.py\n(python-pptx)" as script_pptx #FFF4DA
     }
 }
 
 package "Livrables et Sorties" #FFF7E8 {
     artifact "echantillon_visuel_etape1.png" as out_png #EAF6FF
-    artifact "projet10_etape1_exploration.pptx" as out_pptx #FFF0CC
+    artifact "projet10_presentation.pptx" as out_pptx #FFF0CC
 }
 
 ' Flux de données
 dataset --> notebook : Scan exhaustif (1 506 imgs)\nChargement ImageFolder
-notebook --> out_png : Génération de\nla grille visuelle
+notebook --> out_png : Export de\nla grille visuelle
 
 out_png ..> script_pptx : Import de l'image
 notebook ..> script_pptx : Données statistiques\net observations
 
-script_pptx --> out_pptx : Generation de\nla presentation
+script_pptx --> out_pptx : Mise a jour du\nsupport global
 
 right footer David MEDRAGH projet10
 @enduml

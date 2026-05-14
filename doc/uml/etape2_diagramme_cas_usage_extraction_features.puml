@@ -1,0 +1,49 @@
+@startuml etape2_diagramme_cas_usage_extraction_features
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam actorBorderColor #145A86
+skinparam actorBackgroundColor #FFF4DA
+skinparam usecase {
+  BorderColor #145A86
+  BackgroundColor #EAF6FF
+  FontColor #0B2A45
+}
+
+title Etape 2 - Diagramme de cas d'usage de l'extraction de features
+right footer David MEDRAGH projet10
+
+left to right direction
+
+actor "Data Scientist\njunior" as DS
+
+rectangle "Etape 2 - Extraction de features" {
+  usecase "Construire le\nDataFrame unifie" as UC1
+  usecase "Appliquer le\npreprocessing officiel" as UC2
+  usecase "Verifier visuellement\nle pipeline" as UC3
+  usecase "Configurer ResNet50\ncomme extracteur" as UC4
+  usecase "Extraire les embeddings\nen batch" as UC5
+  usecase "Sauvegarder\nfeatures et metadata" as UC6
+  usecase "Verifier l'integrite\ndes resultats" as UC7
+  usecase "Produire le tableau\nexploitable final" as UC8
+}
+
+DS --> UC1
+DS --> UC2
+DS --> UC3
+DS --> UC4
+DS --> UC5
+DS --> UC6
+DS --> UC7
+DS --> UC8
+
+UC5 .> UC4 : <<include>>
+UC5 .> UC2 : <<include>>
+UC6 .> UC5 : <<include>>
+UC7 .> UC6 : <<include>>
+UC8 .> UC7 : <<include>>
+
+@enduml

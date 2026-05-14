@@ -1,0 +1,91 @@
+@startuml etape2_diagramme_composants_architecture_extraction_features
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam ArrowThickness 1.2
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam folder {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam node {
+  BackgroundColor #F2F8FC
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam component {
+  BackgroundColor #E8F4F8
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+skinparam database {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+
+title Etape 2 - Diagramme de composants de l'architecture d'extraction de features
+right footer David MEDRAGH projet10
+
+package "Source du corpus" #EAF6FF {
+  folder "data/mri_dataset_brain_cancer_oc" as raw_dataset #F4FBFF {
+    artifact "cancer\n50 images" as src_cancer #FDECEC
+    artifact "normal\n50 images" as src_normal #ECF7EE
+    artifact "sans_label\n1406 images" as src_unlabeled #F4EEFF
+  }
+}
+
+package "Indexation et preparation" #EDF7FF {
+  component "projet10_etape2_features.ipynb" as notebook #DDEFFA
+  database "metadata\nDataFrame unifie\n1506 lignes x 6 colonnes" as meta_df #EAF5FF
+  component "MRIDataset\nDataset custom" as dataset #EEF8FF
+  component "weights.transforms()\nPreprocessing officiel" as preprocess #EAFBF2
+  component "DataLoader\nbatch_size = 32\nshuffle = False" as loader #F4F8FF
+}
+
+package "Extraction de features" #EEF8F1 {
+  component "ResNet50\nweights DEFAULT" as resnet #E8F7EC
+  node "Device\nCPU / GPU" as device #F2FBF4
+  artifact "features_array\n1506 x 2048" as feat_matrix #FFF4DA
+}
+
+package "Sorties et restitution" #FFF7E8 {
+  folder "data/features" as features_dir #FFF8EC {
+    artifact "features.npy" as out_npy #FFF0CC
+    artifact "metadata.csv" as out_csv #FFF7E2
+  }
+  artifact "df_exploitable\n1506 x 2054" as out_table #EAF6FF
+  artifact "README.md" as out_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as out_pptx #FFF0CC
+}
+
+raw_dataset --> notebook : Parcours du corpus
+notebook --> meta_df : Construction de l'index stable
+meta_df --> dataset : Metadonnees image par image
+preprocess --> dataset : Resize + Crop + Normalize
+dataset --> loader : Tenseurs preprocesses
+loader --> device : Envoi des batches
+device --> resnet : Forward pass
+resnet --> feat_matrix : Embeddings 2048-d
+feat_matrix --> out_npy : Sauvegarde numpy
+meta_df --> out_csv : Sauvegarde csv
+feat_matrix --> out_table : Concatenation avec metadata
+out_csv --> out_table : Jointure par ordre stable
+out_table --> out_readme : Resume des resultats
+out_table --> out_pptx : Restitution academique
+
+@enduml

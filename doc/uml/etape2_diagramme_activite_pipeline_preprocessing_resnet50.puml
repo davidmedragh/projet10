@@ -1,0 +1,39 @@
+@startuml etape2_diagramme_activite_pipeline_preprocessing_resnet50
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #1A7F5A
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAFBF2
+  BorderColor #1A7F5A
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #49B58C
+}
+
+title Etape 2 - Diagramme d'activite du pipeline de preprocessing ResNet50
+right footer David MEDRAGH projet10
+
+start
+:Recevoir le chemin de l'image;
+:Ouvrir l'image avec PIL;
+if (Image lisible ?) then (Oui)
+  :Convertir en RGB;
+  :Appliquer Resize(232);
+  :Appliquer CenterCrop(224 x 224);
+  :Convertir en tenseur [0,1];
+  :Normaliser avec mean/std ImageNet;
+  :Produire un tenseur compatible ResNet50;
+  :Renvoyer l'image preprocessée au Dataset custom;
+else (Non)
+  :Signaler une erreur de lecture;
+endif
+stop
+
+@enduml
