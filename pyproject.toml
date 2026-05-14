@@ -12,6 +12,8 @@ dependencies = [
     "ipykernel>=7.2.0",
     # Visualisation : graphiques, grilles d'images, histogrammes
     "matplotlib>=3.10.9",
+    # Rendu des sorties Plotly dans les notebooks Jupyter
+    "nbformat>=5.10.4",
     # Calcul numérique : manipulation de tableaux, opérations sur les pixels
     "numpy>=2.4.4",
     # Traitement d'images : redimensionnement, filtres, conversion de couleurs (recommandé par l'école)
@@ -20,8 +22,14 @@ dependencies = [
     "pandas>=3.0.3",
     # Ouverture et vérification technique des images (dimensions, mode, intégrité)
     "pillow>=12.2.0",
+    # Visualisation interactive : scatter plots de clusters (recommandé par l'école)
+    "plotly>=6.7.0",
     # Génération du support de présentation PowerPoint (.pptx)
     "python-pptx>=1.0.2",
+    # Machine learning : PCA, K-Means, DBSCAN, ARI, StandardScaler (recommandé par l'école)
+    "scikit-learn>=1.8.0",
+    # Visualisation statistique : scatter plots, heatmaps (recommandé par l'école)
+    "seaborn>=0.13.2",
     # Framework deep learning : tenseurs, modèles pré-entraînés (étapes 2-4)
     "torch>=2.11.0",
     # Vision par ordinateur : ImageFolder, transforms, modèles pré-entraînés (ResNet50)

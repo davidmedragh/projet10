@@ -13,7 +13,7 @@ Description :
     Le template visuel reprend le style du projet 9 (palette bleu profond / or,
     barre de titre numérotée, footer avec logos, KPI cards, séparateurs).
 
-Slides produites (étapes 1-2) :
+Slides produites (étapes 1-3) :
      1. Couverture
      2. Sommaire
      3. Séparateur ÉTAPE 1 — EXPLORATION
@@ -24,8 +24,11 @@ Slides produites (étapes 1-2) :
      8. Pipeline de preprocessing
      9. Modèle ResNet50 — Configuration
     10. Résultats de l'extraction
-    11. Séparateur BILAN
-    12. Synthèse & Prochaines étapes
+    11. Séparateur ÉTAPE 3 — CLUSTERING
+    12. Réduction de dimension (PCA & t-SNE)
+    13. Clustering & ARI
+    14. Séparateur BILAN
+    15. Synthèse & Prochaines étapes
 
 Usage :
     uv run python scripts/generate_pptx.py
@@ -292,7 +295,9 @@ def build_presentation():
             "Résultats extraction",
         ]),
         ("Étape 3", "Clustering", [
-            "À venir",
+            "Réduction PCA / t-SNE",
+            "K-Means & DBSCAN",
+            "Score ARI & pseudo-labels",
         ]),
         ("Étape 4", "Semi-supervisé", [
             "À venir",
@@ -533,36 +538,112 @@ def build_presentation():
     slide_footer(s)
 
     # ═══════════════════════════════════════════
-    # SLIDE 11 — SÉPARATEUR BILAN
+    # SLIDE 11 — SÉPARATEUR ÉTAPE 3
+    # ═══════════════════════════════════════════
+    add_separator(prs, blank,
+                  "ÉTAPE 3 — CLUSTERING",
+                  "De la haute dimension aux pseudo-labels",
+                  "PCA, t-SNE, K-Means, DBSCAN — labellisation faible")
+
+    # ═══════════════════════════════════════════
+    # SLIDE 12 — RÉDUCTION DE DIMENSION
+    # ═══════════════════════════════════════════
+    s = prs.slides.add_slide(blank)
+    slide_title_bar(s, 7, "Réduction de dimension (PCA & t-SNE)")
+
+    add_content_block(s, "Standardisation", [
+        "StandardScaler : mean=0, std=1 sur 2 048 features",
+        "Nécessaire avant PCA et calcul de distances",
+    ], left=Inches(0.8), top=Inches(1.6), width=Inches(5.5))
+
+    add_content_block(s, "PCA — Variance expliquée", [
+        "100 composantes → 58 % de variance",
+        "50 composantes → 46 % de variance",
+        "90 % non atteint avec 100 composantes",
+        "→ Information très distribuée (ResNet50 = ImageNet)",
+    ], left=Inches(0.8), top=Inches(3.3), width=Inches(5.5))
+
+    add_kpi_card(s, Inches(7.0), Inches(1.6), "2 048→50", "Réduction PCA", OR_ACCENT)
+    add_kpi_card(s, Inches(10.0), Inches(1.6), "46 %", "Variance (50D)", BLEU_ACCENT)
+
+    add_content_block(s, "t-SNE 2D (visualisation uniquement)", [
+        "Appliqué sur PCA 50D (pas sur 2048D brutes)",
+        "Préserve les voisinages locaux",
+        "⚠ Pas utilisé pour le clustering",
+        "Structure visible : cancer et normal tendent à se regrouper",
+    ], left=Inches(7.0), top=Inches(3.3), width=Inches(5.5))
+
+    slide_footer(s)
+
+    # ═══════════════════════════════════════════
+    # SLIDE 13 — CLUSTERING & ARI
+    # ═══════════════════════════════════════════
+    s = prs.slides.add_slide(blank)
+    slide_title_bar(s, 8, "Clustering & Pseudo-labellisation")
+
+    add_table(
+        s,
+        headers=["Méthode", "Clusters", "ARI", "Commentaire"],
+        rows=[
+            ["K-Means (k=2)", "582 / 924", "0.1538", "Alignement modéré"],
+            ["DBSCAN (50D)", "1 + bruit (41%)", "0.0000", "Inadapté en 50D"],
+        ],
+        left=Inches(0.8), top=Inches(1.8), width=Inches(11.5),
+    )
+
+    add_content_block(s, "Mapping (vote majoritaire sur 100 labels)", [
+        "Cluster 0 → cancer (22 cancer vs 2 normal)",
+        "Cluster 1 → normal (48 normal vs 28 cancer)",
+    ], left=Inches(0.8), top=Inches(3.5), width=Inches(5.5))
+
+    add_content_block(s, "Pseudo-labellisation (K-Means)", [
+        "1 406 images non labellisées → pseudo-labels",
+        "558 « cancer » / 848 « normal »",
+        "Sauvegardé dans metadata_weak_labels.csv",
+        "Séparé du jeu fortement labellisé",
+    ], left=Inches(7.0), top=Inches(3.5), width=Inches(5.5))
+
+    add_kpi_card(s, Inches(0.8), Inches(5.8), "0.1538", "ARI K-Means", OR_ACCENT)
+    add_kpi_card(s, Inches(3.6), Inches(5.8), "1 406", "Pseudo-labellisées", BLEU_ACCENT)
+    add_kpi_card(s, Inches(6.4), Inches(5.8), "100 %", "Images assignées", VERT_OK)
+
+    slide_footer(s)
+
+    # ═══════════════════════════════════════════
+    # SLIDE 14 — SÉPARATEUR BILAN
     # ═══════════════════════════════════════════
     add_separator(prs, blank,
                   "BILAN",
                   "Résultats et prochaines étapes",
-                  "Validation des étapes 1-2, préparation du clustering")
+                  "Validation des étapes 1-3, préparation du semi-supervisé")
 
     # ═══════════════════════════════════════════
-    # SLIDE 12 — SYNTHÈSE & PROCHAINES ÉTAPES
+    # SLIDE 15 — SYNTHÈSE & PROCHAINES ÉTAPES
     # ═══════════════════════════════════════════
     s = prs.slides.add_slide(blank)
-    slide_title_bar(s, 7, "Synthèse & Prochaines étapes")
+    slide_title_bar(s, 9, "Synthèse & Prochaines étapes")
 
     add_content_block(s, "Étape 1 — Exploration ✓", [
-        "Dataset propre, homogène, exploitable en l'état",
-        "1 506 images vérifiées — aucune anomalie bloquante",
-        "Écarts documentés (format, nombre d'images)",
+        "Dataset propre, homogène, exploitable",
+        "1 506 images vérifiées — aucune anomalie",
         "Fort déséquilibre : ~6,6 % de labels",
-    ], left=Inches(0.8), top=Inches(1.6), width=Inches(5.5))
+    ], left=Inches(0.8), top=Inches(1.6), width=Inches(3.7))
 
     add_content_block(s, "Étape 2 — Features ✓", [
-        "Preprocessing officiel ResNet50 appliqué",
-        "2 048 features extraites pour chaque image",
-        "0 NaN, 0 Inf — extraction propre",
+        "Preprocessing officiel ResNet50",
+        "2 048 features / image — 0 NaN, 0 Inf",
         "Sauvegarde features.npy + metadata.csv",
-    ], left=Inches(7.0), top=Inches(1.6), width=Inches(5.5))
+    ], left=Inches(4.8), top=Inches(1.6), width=Inches(3.7))
+
+    add_content_block(s, "Étape 3 — Clustering ✓", [
+        "PCA 50D + t-SNE (visualisation)",
+        "K-Means ARI = 0.15 (modéré)",
+        "1 406 pseudo-labels produits",
+    ], left=Inches(8.8), top=Inches(1.6), width=Inches(3.7))
 
     add_content_block(s, "Prochaines étapes", [
-        "Étape 3 — Réduction de dimension + clustering exploratoire",
-        "Étape 4 — Apprentissage semi-supervisé avec labels partiels",
+        "Étape 4 — Apprentissage semi-supervisé (100 labels forts + 1 406 pseudo-labels)",
+        "Fine-tuning ou label propagation pour améliorer les prédictions",
         "Recommandations pour passage à l'échelle (5 000 € / 4M images)",
     ], left=Inches(0.8), top=Inches(4.5), width=Inches(11))
 

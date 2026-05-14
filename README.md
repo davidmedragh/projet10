@@ -83,6 +83,20 @@
     - [Cas d'usage de l'extraction de features](#cas-dusage-de-lextraction-de-features)
   - [Livrables produits](#livrables-produits-1)
 - [Étape 3 — Réalisez une analyse non supervisée](#étape-3--réalisez-une-analyse-non-supervisée)
+  - [Objectif](#objectif-2)
+  - [Standardisation des features](#standardisation-des-features)
+  - [Réduction de dimensionnalité (PCA)](#réduction-de-dimensionnalité-pca)
+    - [Variance expliquée](#variance-expliquée)
+    - [PCA intermédiaire (50D)](#pca-intermédiaire-50d)
+  - [Visualisation t-SNE](#visualisation-t-sne)
+  - [Clustering](#clustering)
+    - [K-Means (k=2)](#k-means-k2)
+    - [DBSCAN](#dbscan)
+  - [Évaluation : score ARI](#évaluation--score-ari)
+  - [Mapping cluster → classe](#mapping-cluster--classe)
+  - [Pseudo-labellisation](#pseudo-labellisation)
+  - [Discussion](#discussion)
+  - [Livrables produits](#livrables-produits-2)
 - [Étape 4 — Appliquez une méthode semi-supervisée](#étape-4--appliquez-une-méthode-semi-supervisée)
 
 ---
@@ -610,7 +624,123 @@ Ce diagramme de cas d'usage resume les actions principales realisees pendant l'e
 
 ## Étape 3 — Réalisez une analyse non supervisée
 
-*À compléter.*
+### Objectif
+
+Je réduis la dimensionnalité des features extraites à l'étape 2 (2 048 dimensions par image), j'applique des méthodes de clustering pour identifier des regroupements naturels, et je produis une labellisation « faible » des 1 406 images non labellisées.
+
+L'objectif final est de préparer un jeu pseudo-labellisé qui servira de base à l'étape 4 (apprentissage semi-supervisé).
+
+### Standardisation des features
+
+Les features issues de ResNet50 sont des sorties de couche ReLU : elles sont positives, non centrées et de magnitudes variables selon les neurones. Avant toute opération de distance ou de décomposition, je standardise chaque dimension (mean=0, std=1) avec `StandardScaler`.
+
+| Statistique | Avant | Après |
+|-------------|-------|-------|
+| Mean | 0.1007 | ≈ 0 |
+| Std | 0.3043 | 1.0000 |
+
+### Réduction de dimensionnalité (PCA)
+
+#### Variance expliquée
+
+J'applique une PCA exploratoire sur 100 composantes pour observer la distribution de la variance :
+
+- **100 composantes** → 58,14 % de variance expliquée
+- **50 composantes** → 46,17 % de variance expliquée
+- **90 % de variance** → non atteint avec 100 composantes
+
+Ce résultat montre que l'information est très distribuée dans les 2 048 dimensions de ResNet50. C'est cohérent avec le fait que le modèle a été pré-entraîné sur ImageNet (1 000 classes très variées).
+
+#### PCA intermédiaire (50D)
+
+Je retiens 50 composantes comme compromis pour les étapes suivantes :
+- **t-SNE** : fonctionne mieux en dimension modérée
+- **DBSCAN** : les distances euclidiennes deviennent instables en très haute dimension
+- 50 composantes captent ~46 % de la variance tout en réduisant le bruit des dimensions peu informatives
+
+### Visualisation t-SNE
+
+t-SNE (t-distributed Stochastic Neighbor Embedding) est appliqué sur les 50 composantes PCA pour produire une projection 2D qui préserve les voisinages locaux.
+
+**⚠️ t-SNE est utilisé uniquement pour la visualisation** — je ne base aucune décision de clustering sur l'apparence du nuage t-SNE, car cet algorithme ne préserve pas les distances globales.
+
+La visualisation montre une certaine structure dans les données, avec les images labellisées (cancer en rouge, normal en vert) tendant à se regrouper.
+
+### Clustering
+
+#### K-Means (k=2)
+
+J'applique K-Means avec k=2 (imposé par la consigne : 2 classes) sur les features standardisées complètes (2 048 dimensions).
+
+| Cluster | Effectif |
+|---------|----------|
+| 0 | 582 |
+| 1 | 924 |
+
+Inertie : 2 914 166,75
+
+#### DBSCAN
+
+DBSCAN est appliqué sur l'espace PCA 50D avec `eps` estimé par heuristique (médiane des distances au 5e voisin = 17,75).
+
+| Résultat | Valeur |
+|----------|--------|
+| Clusters identifiés | 1 |
+| Points bruit (-1) | 618 (41 %) |
+| Points dans le cluster 0 | 888 |
+
+DBSCAN échoue à identifier 2 clusters distincts dans cet espace 50D. Cela illustre une limite classique : DBSCAN est sensible à la dimensionnalité et à l'homogénéité de densité.
+
+### Évaluation : score ARI
+
+L'Adjusted Rand Index (ARI) mesure l'alignement entre les clusters prédits et les vrais labels. Il est calculé **uniquement sur les 100 images fortement labellisées**.
+
+| Méthode | ARI | Interprétation |
+|---------|-----|----------------|
+| K-Means (k=2) | **0.1538** | Alignement modéré — capte partiellement la structure |
+| DBSCAN | 0.0000 | Aucune séparation (1 seul cluster + bruit) |
+
+### Mapping cluster → classe
+
+Par **vote majoritaire** sur les 100 images fortement labellisées :
+
+| Cluster K-Means | Cancer (label fort) | Normal (label fort) | → Classe assignée |
+|-----------------|---------------------|---------------------|-------------------|
+| 0 | 22 | 2 | **cancer** |
+| 1 | 28 | 48 | **normal** |
+
+### Pseudo-labellisation
+
+J'attribue les pseudo-labels K-Means **uniquement aux 1 406 images non labellisées** :
+
+| Pseudo-label | Effectif |
+|--------------|----------|
+| cancer | 558 |
+| normal | 848 |
+
+Le résultat est sauvegardé dans `data/features/metadata_weak_labels.csv`, un fichier **séparé** du jeu fortement labellisé (`metadata.csv` reste intact).
+
+### Discussion
+
+**Pourquoi l'ARI est modéré (0.15) :**
+- Les features ResNet50 proviennent d'un modèle entraîné sur ImageNet (images naturelles), pas sur de l'imagerie médicale
+- La variance est très distribuée : le signal discriminant cancer/normal est dilué dans 2 048 dimensions
+- La distinction entre un cerveau sain et un cerveau avec tumeur en IRM est subtile au niveau des features globales
+
+**Limites :**
+- Les pseudo-labels sont une approximation — leur qualité dépend directement du clustering
+- Le vote majoritaire repose sur 100 images seulement (échantillon limité)
+- Les images classées « bruit » par DBSCAN ne reçoivent pas de pseudo-label dans cette approche
+
+**Perspective pour l'étape 4 :**
+Les pseudo-labels serviront de point de départ à l'apprentissage semi-supervisé. L'étape 4 affinera ces prédictions en exploitant conjointement les 100 labels forts et les 1 406 pseudo-labels.
+
+### Livrables produits
+
+| Fichier | Description |
+|---------|-------------|
+| `projet10_etape3_clustering.ipynb` | Notebook complet : standardisation, PCA, t-SNE, K-Means, DBSCAN, ARI, pseudo-labellisation |
+| `data/features/metadata_weak_labels.csv` | 1 406 images avec pseudo-labels (jeu faiblement labellisé, séparé) |
 
 ## Étape 4 — Appliquez une méthode semi-supervisée
 
