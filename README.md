@@ -52,10 +52,18 @@
   - [Livrables produits](#livrables-produits)
 - [Étape 2 — Prétraitez et extrayez les features](#étape-2--prétraitez-et-extrayez-les-features)
   - [Objectif](#objectif)
+  - [Pourquoi ResNet50](#pourquoi-resnet50)
   - [Modèle et preprocessing](#modèle-et-preprocessing)
   - [Dataset unifié](#dataset-unifié)
   - [Résultats de l'extraction](#résultats-de-lextraction)
-  - [Outils utilisés](#outils-utilisés)
+  - [Stack technique de l'étape 2](#stack-technique-de-létape-2)
+    - [PyTorch](#pytorch)
+    - [torchvision](#torchvision)
+    - [OpenCV (cv2)](#opencv-cv2)
+    - [PIL (Pillow)](#pil-pillow)
+    - [NumPy](#numpy)
+    - [pandas](#pandas)
+    - [matplotlib](#matplotlib)
   - [Sauvegarde](#sauvegarde)
   - [Tableau exploitable](#tableau-exploitable)
   - [Livrables produits](#livrables-produits-1)
@@ -358,6 +366,17 @@ Cette dernière vue de synthèse replace la stack technique dans une logique de 
 
 Dans cette étape, j'ai préparé les images (redimensionnement, normalisation) et utilisé un modèle pré-entraîné (ResNet50) pour extraire des embeddings visuels. L'objectif est d'obtenir un vecteur de features pour chaque image, sauvegardé dans un tableau exploitable.
 
+### Pourquoi ResNet50
+
+ResNet50 (Residual Network à 50 couches) est un réseau de neurones convolutif (CNN) publié par Microsoft Research en 2015. Il a introduit les **connexions résiduelles** (skip connections) qui permettent d'entraîner des réseaux beaucoup plus profonds sans dégradation des performances.
+
+Je l'utilise ici comme **extracteur de features** et non comme classifieur :
+
+- **Pré-entraîné sur ImageNet** : le modèle a appris à reconnaître des motifs visuels sur 1,2 million d'images réparties en 1 000 classes. Ces représentations apprises sont transférables à d'autres domaines, y compris l'imagerie médicale.
+- **Transfer learning** : plutôt que d'entraîner un CNN depuis zéro (ce qui nécessiterait des milliers d'images labellisées), je réutilise les couches convolutionnelles de ResNet50 pour extraire des caractéristiques visuelles pertinentes de mes IRM.
+- **Sortie `avgpool`** : la dernière couche de pooling produit un vecteur dense de **2 048 valeurs** par image. Ce vecteur résume les informations visuelles de l'image et constitue l'embedding que j'utiliserai pour le clustering (étape 3) et l'apprentissage semi-supervisé (étape 4).
+- **Recommandé par l'école** : l'énoncé mentionne explicitement "ResNet ou équivalent" comme modèle à utiliser.
+
 ### Modèle et preprocessing
 
 | Choix | Détail |
@@ -395,16 +414,47 @@ J'ai construit un DataFrame unique regroupant les 1 506 images avec des métadon
 | Mean | 0.1007 |
 | Std | 0.3043 |
 
-### Outils utilisés
+### Stack technique de l'étape 2
 
-| Outil | Usage dans cette étape |
-|-------|----------------------|
-| **torchvision** | Modèle ResNet50, preprocessing officiel, DataLoader |
-| **OpenCV (cv2)** | Recommandé par l'école — vérification visuelle (chargement brute vs preprocessed) |
-| **PIL (Pillow)** | Ouverture des images dans le Dataset custom |
-| **numpy** | Stockage et manipulation des vecteurs de features |
-| **pandas** | DataFrame unifié de métadonnées |
-| **matplotlib** | Visualisation de la vérification post-preprocessing |
+#### PyTorch
+
+PyTorch est le framework de deep learning que j'utilise pour cette étape. Développé par Meta (Facebook AI Research), c'est aujourd'hui l'un des deux standards de l'industrie avec TensorFlow. Je l'utilise ici pour :
+- charger le modèle ResNet50 pré-entraîné et gérer ses paramètres (gel des poids, mode inférence)
+- gérer les tenseurs (les structures de données qui représentent les images et les features)
+- contrôler le calcul des gradients (`torch.no_grad()`) pour économiser la mémoire pendant l'extraction
+
+#### torchvision
+
+torchvision est la bibliothèque de vision par ordinateur de l'écosystème PyTorch. Elle fournit :
+- **les modèles pré-entraînés** : ResNet50, EfficientNet, ViT, etc., avec leurs poids officiels
+- **le preprocessing officiel** : `weights.transforms()` qui applique exactement les mêmes transformations que lors de l'entraînement du modèle (Resize, CenterCrop, Normalize)
+- **le DataLoader** : un chargeur de données en batch qui permet de traiter les images par groupes de 32 pour optimiser la mémoire
+
+#### OpenCV (cv2)
+
+OpenCV (Open Source Computer Vision Library) est une bibliothèque de traitement d'images recommandée par l'école. Développée initialement par Intel, elle offre des fonctions de manipulation d'images (redimensionnement, filtres, conversion de couleurs, détection de contours). Dans cette étape, je l'utilise pour charger les images brutes et effectuer la conversion BGR→RGB lors de la vérification visuelle post-preprocessing.
+
+#### PIL (Pillow)
+
+Pillow est la bibliothèque Python standard pour l'ouverture et la manipulation d'images. Je l'utilise dans le Dataset custom pour ouvrir chaque image avant de lui appliquer le preprocessing torchvision. Elle gère nativement la conversion entre modes couleur (RGB, L, RGBA).
+
+#### NumPy
+
+NumPy est la bibliothèque de référence pour le calcul numérique en Python. Je l'utilise ici pour :
+- stocker la matrice de features extraites (tableau de 1 506 × 2 048 valeurs)
+- vérifier l'intégrité des résultats (détection de NaN, Inf)
+- sauvegarder la matrice au format `.npy`
+
+#### pandas
+
+pandas est la bibliothèque de manipulation de données tabulaires. Je l'utilise pour :
+- construire le DataFrame unifié des 1 506 images avec leurs métadonnées (path, filename, dossier, label_name, label_id, is_labeled)
+- produire le tableau exploitable final (métadonnées + 2 048 features concaténés)
+- sauvegarder les métadonnées au format `.csv`
+
+#### matplotlib
+
+matplotlib est la bibliothèque de visualisation de référence en Python. Je l'utilise pour afficher côte à côte les images brutes (chargées via OpenCV) et les images après preprocessing (dénormalisées), afin de vérifier visuellement que le pipeline de transforms est correct.
 
 ### Sauvegarde
 
