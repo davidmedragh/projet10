@@ -10,6 +10,8 @@ requires-python = ">=3.11"
 dependencies = [
     # Kernel Jupyter pour l'exécution des notebooks dans VS Code
     "ipykernel>=7.2.0",
+    # Widgets Jupyter : barres de progression tqdm dans les notebooks
+    "ipywidgets>=8.1.8",
     # Visualisation : graphiques, grilles d'images, histogrammes
     "matplotlib>=3.10.9",
     # Rendu des sorties Plotly dans les notebooks Jupyter
@@ -34,4 +36,6 @@ dependencies = [
     "torch>=2.11.0",
     # Vision par ordinateur : ImageFolder, transforms, modèles pré-entraînés (ResNet50)
     "torchvision>=0.26.0",
+    # Barres de progression pour le suivi des entraînements CNN
+    "tqdm>=4.67.3",
 ]

@@ -115,6 +115,17 @@
     - [Cas d'usage de l'analyse non supervisée](#cas-dusage-de-lanalyse-non-supervisée)
   - [Livrables produits](#livrables-produits-2)
 - [Étape 4 — Appliquez une méthode semi-supervisée](#étape-4--appliquez-une-méthode-semi-supervisée)
+  - [Objectif](#objectif-3)
+  - [Protocole anti-fuite](#protocole-anti-fuite)
+  - [Split des données](#split-des-données)
+  - [Re-clustering propre](#re-clustering-propre)
+  - [Architecture CNN](#architecture-cnn)
+  - [Modèle A — Supervisé pur](#modèle-a--supervisé-pur)
+  - [Modèle B — Semi-supervisé](#modèle-b--semi-supervisé)
+  - [Comparaison des résultats](#comparaison-des-résultats)
+  - [Justification métier](#justification-métier)
+  - [Recommandations — Passage à l'échelle](#recommandations--passage-à-léchelle)
+  - [Livrables produits](#livrables-produits-3)
 
 ---
 
@@ -895,4 +906,100 @@ Ce diagramme de cas d'usage résume les actions principales réalisées dans l'�
 
 ## Étape 4 — Appliquez une méthode semi-supervisée
 
-*À compléter.*
+### Objectif
+
+J'entraîne un CNN (ResNet50 fine-tuné) selon deux approches et je compare leurs performances :
+- **Modèle A** : supervisé pur (entraîné uniquement sur les 64 images fortement labellisées)
+- **Modèle B** : semi-supervisé (pré-entraîné sur 1 406 pseudo-labels, puis fine-tuné sur les 64 images fortes)
+
+L'objectif est de mesurer si l'exploitation des pseudo-labels (labellisation faible produite à l'étape 3) apporte un gain par rapport à un entraînement supervisé classique.
+
+### Protocole anti-fuite
+
+À l'étape 3, le clustering K-Means avait été calculé sur les 1 506 images (incluant les 20 futures images test), et le mapping utilisait les 100 labels forts complets. Cela constitue une fuite d'information.
+
+En étape 4, je corrige cela :
+1. **Split fixe** avant toute opération (80/20 stratifié sur les 100 labels forts)
+2. **Re-fit K-Means** sur 1 486 images (sans les 20 test)
+3. **Re-mapping** cluster→classe par vote majoritaire sur les **64 images train uniquement**
+4. **Re-génération** des weak labels pour les 1 406 images non labellisées
+
+### Split des données
+
+| Jeu | Effectif | Rôle |
+|-----|----------|------|
+| Train (fort) | 64 (32 cancer, 32 normal) | Entraînement / fine-tuning |
+| Val (fort) | 16 (8 cancer, 8 normal) | Early stopping |
+| Test (fort) | 20 (10 cancer, 10 normal) | Évaluation finale (touché 1 fois) |
+| Weak (pseudo) | 1 406 (506 cancer, 900 normal) | Pré-entraînement modèle B |
+
+Tous les splits sont stratifiés (`random_state=42`). Le jeu test n'intervient dans aucune décision.
+
+### Re-clustering propre
+
+Le re-clustering sur 1 486 images (sans test) donne un mapping légèrement différent : 52 images sur 1 406 (3,7 %) changent de pseudo-label par rapport à l'étape 3. Cela confirme que la fuite, bien que faible en pratique, existe et doit être corrigée pour la rigueur méthodologique.
+
+### Architecture CNN
+
+| Aspect | Choix | Justification |
+|--------|-------|---------------|
+| Modèle | ResNet50 fine-tuné | Cohérence étape 2, transfer learning |
+| Couches dégelées | layer4 + fc | Compromis : features haut niveau adaptées, bas niveau ImageNet préservé |
+| fc | Linear(2048, 2) | 2 classes : cancer / normal |
+| Params entraînables | 14,9M (63,7 %) | |
+| Loss | CrossEntropyLoss | Standard classification |
+| Optimiseur | Adam, lr=1e-4 | Adapté au fine-tuning |
+| Early stopping | Patience=5 sur val_loss | Évite l'overfitting |
+| Sampler weak | WeightedRandomSampler | Compense le déséquilibre 506/900 |
+
+### Modèle A — Supervisé pur
+
+- Entraîné sur 64 images fortes, val 16, early stopping patience=5
+- Convergence à l'époque 4 (early stop époque 9)
+- Temps : ~56s (CPU)
+
+### Modèle B — Semi-supervisé
+
+**Phase 1** — Pré-entraînement sur 1 406 weak labels :
+- 10 époques, pas d'early stopping (pas de val fiable)
+- Temps : ~19 min (CPU)
+- Résultat post-weak (évalué sur val, pas test) : F1=0.56, recall cancer=0.25 — médiocre seul
+
+**Phase 2** — Fine-tuning sur 64 images fortes :
+- Même protocole que modèle A (val 16, early stopping patience=5)
+- Convergence à l'époque 9 (early stop époque 14)
+- Temps : ~84s (CPU)
+
+### Comparaison des résultats
+
+| Modèle | F1 (macro) | Accuracy | Recall cancer | Précision cancer |
+|--------|-----------|----------|---------------|-----------------|
+| A — Supervisé pur | 0.79 | 0.80 | 0.60 | 1.00 |
+| **B — Semi-supervisé** | **0.85** | **0.85** | **0.70** | **1.00** |
+| Δ (B − A) | +0.05 | +0.05 | +0.10 | 0 |
+
+**L'approche semi-supervisée apporte un gain** : +5 points de F1 et +10 points de recall cancer. Le modèle B détecte 1 cancer supplémentaire sur 10 par rapport au modèle A, sans perdre en précision.
+
+### Justification métier
+
+Dans un contexte de détection de tumeurs (CurelyticsIA), un **Faux Négatif** (cancer prédit comme normal) est l'erreur la plus grave. Le **Recall cancer** est donc la métrique reine. Le modèle B l'améliore de 60 % à 70 %.
+
+### Recommandations — Passage à l'échelle
+
+**Question de Clara** : 5 000 € pour 4 millions d'images à labelliser. Est-ce faisable ?
+
+**Réponse** : oui, sous certaines conditions.
+
+| Scénario | Approche | Coût estimé |
+|----------|----------|-------------|
+| Inférence du modèle | GPU cloud (~100-200 img/s) pour 4M images → 6-11h | 3-11 € |
+| Active learning | Inférence + labellisation humaine ciblée (~100k images incertaines) | ~5 000 € |
+| Labellisation exhaustive | 4M × 0,05 €/image humaine | ~200 000 € (hors budget) |
+
+L'approche recommandée est le **scénario 2 (active learning itératif)** : inférer avec le modèle, cibler les images les plus incertaines pour vérification humaine, réentraîner, itérer.
+
+### Livrables produits
+
+| Fichier | Description |
+|---------|-------------|
+| `projet10_etape4_semi_supervise.ipynb` | Notebook complet : split, re-clustering, CNN, comparaison, recommandations |

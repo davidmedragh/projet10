@@ -13,7 +13,7 @@ Description :
     Le template visuel reprend le style du projet 9 (palette bleu profond / or,
     barre de titre numérotée, footer avec logos, KPI cards, séparateurs).
 
-Slides produites (étapes 1-3) :
+Slides produites (étapes 1-4) :
      1. Couverture
      2. Sommaire
      3. Séparateur ÉTAPE 1 — EXPLORATION
@@ -26,9 +26,9 @@ Slides produites (étapes 1-3) :
     10. Résultats de l'extraction
     11. Séparateur ÉTAPE 3 — CLUSTERING
     12. Réduction de dimension (PCA & t-SNE)
-    13. Clustering & ARI
-    14. Séparateur BILAN
-    15. Synthèse & Prochaines étapes
+    13. Clustering & Pseudo-labellisation
+    14. Séparateur ÉTAPE 4 — SEMI-SUPERVISÉ
+    15. Résultats & Bilan final
 
 Usage :
     uv run python scripts/generate_pptx.py
@@ -303,7 +303,9 @@ def build_presentation():
             "Score ARI & pseudo-labels",
         ]),
         ("Étape 4", "Semi-supervisé", [
-            "À venir",
+            "CNN fine-tuné (ResNet50)",
+            "Supervisé vs Semi-supervisé",
+            "Résultats & Bilan",
         ]),
     ]
 
@@ -636,42 +638,40 @@ def build_presentation():
     slide_footer(s)
 
     # ═══════════════════════════════════════════
-    # SLIDE 14 — SÉPARATEUR BILAN
+    # SLIDE 14 — SÉPARATEUR ÉTAPE 4
     # ═══════════════════════════════════════════
     add_separator(prs, blank,
-                  "BILAN",
-                  "Résultats et prochaines étapes",
-                  "Validation des étapes 1-3, préparation du semi-supervisé")
+                  "ÉTAPE 4 — SEMI-SUPERVISÉ",
+                  "Du clustering au CNN fine-tuné",
+                  "Supervisé pur vs semi-supervisé — comparaison rigoureuse")
 
     # ═══════════════════════════════════════════
-    # SLIDE 15 — SYNTHÈSE & PROCHAINES ÉTAPES
+    # SLIDE 15 — RÉSULTATS & BILAN
     # ═══════════════════════════════════════════
     s = prs.slides.add_slide(blank)
-    slide_title_bar(s, 9, "Synthèse & Prochaines étapes")
+    slide_title_bar(s, 9, "Résultats & Bilan final")
 
-    add_content_block(s, "Étape 1 — Exploration ✓", [
-        "Dataset propre, homogène, exploitable",
-        "1 506 images vérifiées — aucune anomalie",
-        "Fort déséquilibre : ~6,6 % de labels",
-    ], left=Inches(0.8), top=Inches(1.6), width=Inches(3.7))
+    add_table(
+        s,
+        headers=["Modèle", "F1 (macro)", "Accuracy", "Recall cancer", "Précision cancer"],
+        rows=[
+            ["A — Supervisé pur", "0.79", "0.80", "0.60", "1.00"],
+            ["B — Semi-supervisé", "0.85", "0.85", "0.70", "1.00"],
+            ["Δ (B − A)", "+0.05", "+0.05", "+0.10", "—"],
+        ],
+        left=Inches(0.8), top=Inches(1.8), width=Inches(11.5),
+    )
 
-    add_content_block(s, "Étape 2 — Features ✓", [
-        "Preprocessing officiel ResNet50",
-        "2 048 features / image — 0 NaN, 0 Inf",
-        "Sauvegarde features.npy + metadata.csv",
-    ], left=Inches(4.8), top=Inches(1.6), width=Inches(3.7))
+    add_kpi_card(s, Inches(0.8), Inches(3.8), "+10 %", "Recall cancer (B > A)", VERT_OK)
+    add_kpi_card(s, Inches(3.6), Inches(3.8), "0.85", "F1 semi-supervisé", OR_ACCENT)
+    add_kpi_card(s, Inches(6.4), Inches(3.8), "1 406", "Pseudo-labels utilisés", BLEU_ACCENT)
+    add_kpi_card(s, Inches(9.2), Inches(3.8), "5 000 €", "Budget passage échelle", GRIS_SUBTITLE)
 
-    add_content_block(s, "Étape 3 — Clustering ✓", [
-        "PCA 50D + t-SNE (visualisation)",
-        "K-Means ARI = 0.15 (modéré)",
-        "1 406 pseudo-labels produits",
-    ], left=Inches(8.8), top=Inches(1.6), width=Inches(3.7))
-
-    add_content_block(s, "Prochaines étapes", [
-        "Étape 4 — Apprentissage semi-supervisé (100 labels forts + 1 406 pseudo-labels)",
-        "Fine-tuning ou label propagation pour améliorer les prédictions",
-        "Recommandations pour passage à l'échelle (5 000 € / 4M images)",
-    ], left=Inches(0.8), top=Inches(4.5), width=Inches(11))
+    add_content_block(s, "Conclusion", [
+        "L'approche semi-supervisée apporte un gain mesurable (+10% recall cancer)",
+        "Passage à l'échelle faisable : inférence + active learning itératif",
+        "Limites : jeu test de 20 images, résultats exploratoires (pas cliniques)",
+    ], left=Inches(0.8), top=Inches(5.3), width=Inches(11))
 
     slide_footer(s)
 
