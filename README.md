@@ -25,6 +25,7 @@
 - [Objectifs pédagogiques](#objectifs-pédagogiques)
 - [Livrables](#livrables)
   - [Livrables à déposer](#livrables-à-déposer)
+  - [Fiche d'auto-évaluation](#fiche-dauto-évaluation)
   - [Convention de nommage](#convention-de-nommage)
   - [Soutenance](#soutenance)
 - [Vue d'ensemble du projet](#vue-densemble-du-projet)
@@ -157,6 +158,9 @@
     - [Structure des sorties semi-supervisées](#structure-des-sorties-semi-supervisées)
     - [Cas d'usage de l'apprentissage semi-supervisé](#cas-dusage-de-lapprentissage-semi-supervisé)
   - [Livrables produits](#livrables-produits-3)
+- [Auto-évaluation](#auto-évaluation)
+  - [Compétence 1 — Préparer et transformer des données](#compétence-1--préparer-et-transformer-des-données)
+  - [Compétence 2 — Identifier un modèle adapté](#compétence-2--identifier-un-modèle-adapté)
 
 ---
 
@@ -233,6 +237,12 @@ J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de mo
 | 1 | Notebook contenant : extraction des features, preprocessing adapté au(x) modèle(s) utilisé(s), analyse non-supervisée, entraînement de modèles de clustering | `.ipynb` |
 | 2 | Notebook contenant : approche semi-supervisée | `.ipynb` |
 | 3 | Support de présentation | `.pdf` ou `.ppt` (15 slides max) |
+
+### Fiche d'auto-évaluation
+
+La version remplie de la fiche d'auto-évaluation est disponible dans :
+
+- [`livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf)
 
 ### Convention de nommage
 
@@ -1270,3 +1280,33 @@ Ce diagramme de cas d'usage résume les actions principales réalisées dans l'�
 | `doc/png/projet10_etape4_stack_technique_detaillee.png` | Vue détaillée de la stack technique de l'étape 4 |
 | `doc/uml/` | Sources PlantUML des diagrammes de l'étape 4 |
 | `doc/uml/png/` | Exports PNG des diagrammes de l'étape 4 |
+
+## Auto-évaluation
+
+La fiche d'auto-évaluation remplie est disponible dans [`livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf).
+
+Les critères ci-dessous sont relus à partir de l'état réel du dépôt, des notebooks et du support global. Quand un critère du formulaire parle de "valeurs manquantes" ou "outliers", je l'interprète dans le contexte d'un projet d'imagerie médicale : images corrompues, formats incohérents, dimensions anormales, doublons ou hétérogénéité technique.
+
+### Compétence 1 — Préparer et transformer des données
+
+| Critère | Couvert | Preuve |
+|---|---|---|
+| J'ai nettoyé les données | ✅ | Étape 1 : contrôle de lisibilité, absence d'images corrompues, homogénéité `512×512`, `RGB`, `JPEG`, absence de doublons de noms |
+| J'ai réduit les biais potentiels liés aux données | ✅ | Vérification de l'homogénéité technique du corpus, séparation stricte labels forts / labels faibles, split stratifié à l'étape 4 |
+| J'ai commenté mon code pour en faciliter la lecture | ✅ | Notebooks structurés avec cellules Markdown explicatives + commentaires ciblés dans les cellules de code (`Dataset`, preprocessing, training, evaluation) |
+| J'ai appliqué les transformations adaptées au modèle | ✅ | Étape 2 : `ResNet50_Weights.DEFAULT.transforms()` ; étape 3 : `StandardScaler` avant PCA / clustering ; étape 4 : transforms ResNet50 pour le CNN |
+| J'ai filtré et normalisé les données si nécessaire | ✅ | Conversion explicite en `RGB`, preprocessing officiel `Resize / CenterCrop / Normalize`, standardisation des `2048` features |
+| J'ai vérifié que les sorties sont exploitables pour la suite | ✅ | Sauvegarde et validation de `features.npy`, `metadata.csv`, `metadata_weak_labels.csv` ; contrôle de shape, absence de `NaN` / `inf`, DataFrame exploitable de `1506 × 2054` |
+
+### Compétence 2 — Identifier un modèle adapté
+
+| Critère | Couvert | Preuve |
+|---|---|---|
+| J'ai expérimenté plusieurs méthodes de clustering | ✅ | Étape 3 : comparaison `K-Means (k=2)` vs `DBSCAN` sur espace PCA 50D |
+| J'ai justifié l'approche semi-supervisée | ✅ | Étape 4 : comparaison explicite entre modèle A supervisé pur et modèle B semi-supervisé (`weak → strong`) |
+| J'ai utilisé des métriques pertinentes | ✅ | `F1 macro`, `accuracy`, `recall cancer`, `précision cancer`, matrices de confusion ; `ARI` pour le clustering |
+| J'ai ajusté les hyperparamètres pour optimiser l'entraînement | ✅ | Choix justifié de `lr=1e-4`, `batch_size=16`, `WeightedRandomSampler`, `patience=5`, gel partiel de ResNet50 (`layer4 + fc`) |
+| J'ai réalisé un support de présentation avec recommandations de passage à l'échelle | ✅ | `projet10_presentation.pptx` + section `Recommandations — Passage à l'échelle` dans le README |
+| J'ai mis en lien mes choix techniques avec les contraintes métier | ✅ | Priorité donnée au `recall cancer`, discussion budget `5 000 € / 4 millions d'images`, scénario recommandé d'active learning itératif |
+| J'ai préparé des arguments pour la soutenance | ✅ | README complet, visuels d'architecture/stack, diagrammes UML globaux et par étape, justification des choix méthodologiques |
+| J'ai vérifié la cohérence entre notebooks et support | ✅ | Les métriques, le protocole anti-fuite, la comparaison supervisé / semi-supervisé et les recommandations budgetaires sont alignés entre notebooks, README et `generate_pptx.py` |
