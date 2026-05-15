@@ -8,7 +8,7 @@ Date : Mai 2026
 Description :
     Ce script génère un fichier PowerPoint (.pptx) unique couvrant toutes les
     étapes du projet. Il est conçu pour être enrichi au fur et à mesure
-    de l'avancement (étapes 1 à 4). Limite : 15 slides max (consigne école).
+    de l'avancement (étapes 1 à 4).
 
     Le template visuel reprend le style du projet 9 (palette bleu profond / or,
     barre de titre numérotée, footer avec logos, KPI cards, séparateurs).
@@ -28,7 +28,9 @@ Slides produites (étapes 1-4) :
     12. Réduction de dimension (PCA & t-SNE)
     13. Clustering & Pseudo-labellisation
     14. Séparateur ÉTAPE 4 — SEMI-SUPERVISÉ
-    15. Résultats & Bilan final
+    15. Méthodologie semi-supervisée
+    16. Résultats & Bilan final
+    17. Conclusion
 
 Usage :
     uv run python scripts/generate_pptx.py
@@ -648,10 +650,42 @@ def build_presentation():
                   ETAPE4_ARCHITECTURE_UML_PATH)
 
     # ═══════════════════════════════════════════
-    # SLIDE 15 — RÉSULTATS & BILAN
+    # SLIDE 15 — MÉTHODOLOGIE SEMI-SUPERVISÉE
     # ═══════════════════════════════════════════
     s = prs.slides.add_slide(blank)
-    slide_title_bar(s, 9, "Résultats & Bilan final")
+    slide_title_bar(s, 9, "Méthodologie semi-supervisée")
+
+    add_content_block(s, "Architecture CNN (fine-tuning ResNet50)", [
+        "layer4 + fc dégelés → 14,9M / 23,5M params entraînables (63,7 %)",
+        "fc remplacé par Linear(2048, 2) — classification binaire",
+        "CrossEntropyLoss + Adam (lr=1e-4) — 10 époques",
+    ], left=Inches(0.8), top=Inches(1.6), width=Inches(5.5))
+
+    add_content_block(s, "Protocole anti-fuite", [
+        "Re-fit KMeans sur 1 486 images (hors test)",
+        "Mapping cluster → classe sur les 64 images train uniquement",
+        "Test set jamais exposé au clustering ni au mapping",
+    ], left=Inches(7.0), top=Inches(1.6), width=Inches(5.5))
+
+    add_content_block(s, "Split des données", [
+        "64 labellisées → train (32 cancer + 32 normal)",
+        "20 labellisées → test (10 cancer + 10 normal)",
+        "1 406 pseudo-labellisées → entraînement modèle B",
+        "16 restantes → non utilisées (trop proches test)",
+    ], left=Inches(0.8), top=Inches(4.0), width=Inches(5.5))
+
+    add_kpi_card(s, Inches(7.0), Inches(4.0), "63,7 %", "Params entraînables", OR_ACCENT)
+    add_kpi_card(s, Inches(10.0), Inches(4.0), "1 486", "Images re-clustering", BLEU_ACCENT)
+    add_kpi_card(s, Inches(7.0), Inches(5.5), "64+1406", "Train (B)", VERT_OK)
+    add_kpi_card(s, Inches(10.0), Inches(5.5), "20", "Test (isolé)", GRIS_SUBTITLE)
+
+    slide_footer(s)
+
+    # ═══════════════════════════════════════════
+    # SLIDE 16 — RÉSULTATS & BILAN
+    # ═══════════════════════════════════════════
+    s = prs.slides.add_slide(blank)
+    slide_title_bar(s, 10, "Résultats & Bilan final")
 
     add_table(
         s,
@@ -669,13 +703,25 @@ def build_presentation():
     add_kpi_card(s, Inches(6.4), Inches(3.8), "1 406", "Pseudo-labels utilisés", BLEU_ACCENT)
     add_kpi_card(s, Inches(9.2), Inches(3.8), "5 000 €", "Budget passage échelle", GRIS_SUBTITLE)
 
-    add_content_block(s, "Conclusion", [
+    slide_footer(s)
+
+    # ═══════════════════════════════════════════
+    # SLIDE 17 — CONCLUSION
+    # ═══════════════════════════════════════════
+    s = prs.slides.add_slide(blank)
+    slide_title_bar(s, 11, "Conclusion")
+
+    add_content_block(s, "Bilan du projet", [
         "L'approche semi-supervisée apporte un gain mesurable (+10% recall cancer)",
-        "Passage à l'échelle faisable : inférence + active learning itératif",
-        "Limites : jeu test de 20 images, résultats exploratoires (pas cliniques)",
         "Pipeline complet validé : preprocessing → features → clustering → fine-tuning",
-        "Recommandation : collecte de labels supplémentaires pour renforcer la fiabilité",
-    ], left=Inches(0.8), top=Inches(5.3), width=Inches(11))
+        "Passage à l'échelle faisable : inférence + active learning itératif",
+    ], left=Inches(0.8), top=Inches(1.8), width=Inches(11))
+
+    add_content_block(s, "Limites & Recommandations", [
+        "Jeu test de 20 images — résultats exploratoires, pas cliniques",
+        "Recommandation : collecte de labels supplémentaires via active learning",
+        "Perspective : validation sur un jeu externe et collaboration radiologues",
+    ], left=Inches(0.8), top=Inches(3.8), width=Inches(11))
 
     slide_footer(s)
 

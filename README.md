@@ -27,6 +27,11 @@
   - [Livrables à déposer](#livrables-à-déposer)
   - [Convention de nommage](#convention-de-nommage)
   - [Soutenance](#soutenance)
+- [Vue d'ensemble du projet](#vue-densemble-du-projet)
+  - [Architecture globale](#architecture-globale)
+  - [Workflow global](#workflow-global)
+  - [Stack technique globale](#stack-technique-globale)
+  - [Écosystème technique global](#écosystème-technique-global)
 - [Dataset](#dataset)
   - [Source et description](#source-et-description)
   - [Structure du dataset](#structure-du-dataset)
@@ -125,6 +130,11 @@
   - [Comparaison des résultats](#comparaison-des-résultats)
   - [Justification métier](#justification-métier)
   - [Recommandations — Passage à l'échelle](#recommandations--passage-à-léchelle)
+  - [Synthèses visuelles](#synthèses-visuelles-3)
+    - [Architecture générale de l'étape 4](#architecture-générale-de-létape-4)
+    - [Architecture détaillée de l'étape 4](#architecture-détaillée-de-létape-4)
+    - [Stack technique générale de l'étape 4](#stack-technique-générale-de-létape-4)
+    - [Stack technique détaillée de l'étape 4](#stack-technique-détaillée-de-létape-4)
   - [Diagrammes UML](#diagrammes-uml-3)
     - [Workflow global de l'apprentissage semi-supervisé](#workflow-global-de-lapprentissage-semi-supervisé)
     - [Architecture technique CNN semi-supervisée](#architecture-technique-cnn-semi-supervisée)
@@ -238,6 +248,42 @@ L'évaluateur joue le rôle de **Clara**, responsable Data Science de Curelytics
 | Débrief | 5 min |
 
 La présentation doit durer entre 10 et 20 minutes.
+
+## Vue d'ensemble du projet
+
+Cette section rassemble quatre visuels transverses qui synthétisent la logique complète du projet 10, depuis le dataset initial jusqu'à la comparaison finale entre approche supervisée pure et approche semi-supervisée.
+
+### Architecture globale
+
+Cette vue met en avant les grands blocs fonctionnels du projet : exploration du corpus, extraction de features, clustering exploratoire, pseudo-labellisation et entraînement CNN.
+
+<p align="center">
+  <img src="doc/png/projet10_architecture_globale.png" alt="Architecture globale du projet 10" width="100%">
+</p>
+
+### Workflow global
+
+Cette vue complète la précédente en insistant sur l'enchaînement méthodologique des étapes et sur la continuité entre préparation des données, modélisation et restitution finale.
+
+<p align="center">
+  <img src="doc/png/projet10_workflow_global.png" alt="Workflow global du projet 10" width="100%">
+</p>
+
+### Stack technique globale
+
+Cette vue présente les briques techniques principales mobilisées sur l'ensemble du projet, de l'exploration initiale jusqu'à l'apprentissage semi-supervisé.
+
+<p align="center">
+  <img src="doc/png/projet10_stack_technique_globale.png" alt="Stack technique globale du projet 10" width="100%">
+</p>
+
+### Écosystème technique global
+
+Cette vue complète la stack globale en mettant davantage l'accent sur l'organisation de l'écosystème logiciel utilisé pour les notebooks, les analyses, les visualisations et la documentation.
+
+<p align="center">
+  <img src="doc/png/projet10_ecosysteme_technique_global.png" alt="Ecosysteme technique global du projet 10" width="100%">
+</p>
 
 ## Dataset
 
@@ -1012,6 +1058,40 @@ Dans un contexte de détection de tumeurs (CurelyticsIA), un **Faux Négatif** (
 
 L'approche recommandée est le **scénario 2 (active learning itératif)** : inférer avec le modèle, cibler les images les plus incertaines pour vérification humaine, réentraîner, itérer.
 
+### Synthèses visuelles
+
+#### Architecture générale de l'étape 4
+
+Cette vue d'ensemble résume la chaîne complète de l'apprentissage semi-supervisé : séparation stricte des jeux, préparation des données, entraînement comparatif et évaluation finale.
+
+<p align="center">
+  <img src="doc/png/projet10_etape4_architecture_generale.png" alt="Architecture generale de l etape 4" width="100%">
+</p>
+
+#### Architecture détaillée de l'étape 4
+
+Cette version détaillée met davantage l'accent sur la logique anti-fuite, les DataLoaders PyTorch, le fine-tuning de ResNet50 et la comparaison finale entre les modèles A et B.
+
+<p align="center">
+  <img src="doc/png/projet10_etape4_architecture_detaillee.png" alt="Architecture detaillee de l etape 4" width="100%">
+</p>
+
+#### Stack technique générale de l'étape 4
+
+Cette synthèse technique met en avant les bibliothèques principales mobilisées dans l'étape 4 pour préparer les jeux, entraîner les modèles CNN et comparer les performances.
+
+<p align="center">
+  <img src="doc/png/projet10_etape4_stack_technique_generale.png" alt="Stack technique generale de l etape 4" width="100%">
+</p>
+
+#### Stack technique détaillée de l'étape 4
+
+Cette vue détaillée explicite plus finement les rôles de `PyTorch`, `torchvision`, `pandas`, `scikit-learn`, `seaborn` et `matplotlib` dans le protocole semi-supervisé.
+
+<p align="center">
+  <img src="doc/png/projet10_etape4_stack_technique_detaillee.png" alt="Stack technique detaillee de l etape 4" width="100%">
+</p>
+
 ### Diagrammes UML
 
 Pour documenter l'étape 4, j'ai préparé une série de diagrammes UML en PlantUML. Ils détaillent la logique anti-fuite, la préparation des DataLoaders, le fine-tuning de ResNet50, les deux protocoles d'entraînement et la comparaison finale entre approche supervisée pure et approche semi-supervisée.
@@ -1125,5 +1205,9 @@ Ce diagramme de cas d'usage résume les actions principales réalisées dans l'�
 | Fichier | Description |
 |---------|-------------|
 | `projet10_etape4_semi_supervise.ipynb` | Notebook complet : split, re-clustering, CNN, comparaison, recommandations |
+| `doc/png/projet10_etape4_architecture_generale.png` | Vue synthétique de l'architecture de l'étape 4 |
+| `doc/png/projet10_etape4_architecture_detaillee.png` | Vue détaillée de l'architecture de l'étape 4 |
+| `doc/png/projet10_etape4_stack_technique_generale.png` | Vue synthétique de la stack technique de l'étape 4 |
+| `doc/png/projet10_etape4_stack_technique_detaillee.png` | Vue détaillée de la stack technique de l'étape 4 |
 | `doc/uml/` | Sources PlantUML des diagrammes de l'étape 4 |
 | `doc/uml/png/` | Exports PNG des diagrammes de l'étape 4 |
