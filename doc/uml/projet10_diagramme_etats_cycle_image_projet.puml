@@ -1,0 +1,49 @@
+@startuml projet10_diagramme_etats_cycle_image_projet
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam state {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  FontColor #0B2A45
+  AttributeFontColor #0B2A45
+  StartColor #2E7D32
+  EndColor #C62828
+}
+
+title Projet 10 - Diagramme d'etats du cycle de vie d'une image
+right footer David MEDRAGH projet10
+
+[*] --> Image_brute
+Image_brute : Image presente\ndans le dataset
+
+Image_brute --> Image_exploree : Etape 1
+Image_exploree : Resolution, format,\nmode couleur verifies
+
+Image_exploree --> Image_vectorisee : Etape 2
+Image_vectorisee : Embedding ResNet50\n2 048 dimensions
+
+Image_vectorisee --> Image_clusterisee : Etape 3
+Image_clusterisee : K-Means / DBSCAN\ncluster attribue
+
+Image_clusterisee --> Image_pseudo_labellisee : Si image sans label
+Image_clusterisee --> Image_fortement_labellisee : Si label expert
+
+Image_pseudo_labellisee --> Image_entrainement_semi : Etape 4
+Image_fortement_labellisee --> Image_train_val_test : Split anti-fuite
+
+Image_train_val_test --> Image_entrainement_supervise : Si train / val
+Image_train_val_test --> Image_test_final : Si test
+
+Image_entrainement_semi --> Prediction_modele_B
+Image_entrainement_supervise --> Prediction_modele_A
+Image_test_final --> Prediction_modele_A
+Image_test_final --> Prediction_modele_B
+
+Prediction_modele_A --> [*]
+Prediction_modele_B --> [*]
+
+@enduml

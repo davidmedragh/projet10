@@ -32,6 +32,13 @@
   - [Workflow global](#workflow-global)
   - [Stack technique globale](#stack-technique-globale)
   - [Écosystème technique global](#écosystème-technique-global)
+  - [Diagrammes UML globaux](#diagrammes-uml-globaux)
+    - [Workflow global du projet](#workflow-global-du-projet)
+    - [Architecture technique globale](#architecture-technique-globale)
+    - [Structure des livrables](#structure-des-livrables)
+    - [Séquence du pipeline complet](#séquence-du-pipeline-complet)
+    - [Cycle de vie d'une image dans le projet](#cycle-de-vie-dune-image-dans-le-projet)
+    - [Cas d'usage global](#cas-dusage-global)
 - [Dataset](#dataset)
   - [Source et description](#source-et-description)
   - [Structure du dataset](#structure-du-dataset)
@@ -251,7 +258,7 @@ La présentation doit durer entre 10 et 20 minutes.
 
 ## Vue d'ensemble du projet
 
-Cette section rassemble quatre visuels transverses qui synthétisent la logique complète du projet 10, depuis le dataset initial jusqu'à la comparaison finale entre approche supervisée pure et approche semi-supervisée.
+Cette section rassemble quatre visuels transverses et une série de diagrammes UML globaux qui synthétisent la logique complète du projet 10, depuis le dataset initial jusqu'à la comparaison finale entre approche supervisée pure et approche semi-supervisée.
 
 ### Architecture globale
 
@@ -283,6 +290,58 @@ Cette vue complète la stack globale en mettant davantage l'accent sur l'organis
 
 <p align="center">
   <img src="doc/png/projet10_ecosysteme_technique_global.png" alt="Ecosysteme technique global du projet 10" width="100%">
+</p>
+
+### Diagrammes UML globaux
+
+Les diagrammes ci-dessous complètent les visuels de synthèse en documentant le projet sous un angle plus méthodologique et plus technique.
+
+#### Workflow global du projet
+
+Ce diagramme d'activité montre la progression complète du projet, du dataset brut jusqu'à la restitution finale des résultats.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_activite_workflow_global.png" alt="Workflow global UML du projet 10" width="100%">
+</p>
+
+#### Architecture technique globale
+
+Ce diagramme de composants relie le corpus d'images, les notebooks, les fichiers intermédiaires, les pseudo-labels, le support global et le `README`.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_composants_architecture_globale.png" alt="Architecture technique globale UML du projet 10" width="100%">
+</p>
+
+#### Structure des livrables
+
+Ce diagramme de packages présente l'organisation logique du workspace, des données, de la documentation, des notebooks et des livrables finaux.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_package_structure_livrables.png" alt="Structure des livrables UML du projet 10" width="100%">
+</p>
+
+#### Séquence du pipeline complet
+
+Ce diagramme de séquence représente les interactions entre le Data Scientist junior, les notebooks des quatre étapes, le dataset, le `README` et le support global.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_sequence_pipeline_complet.png" alt="Sequence du pipeline complet UML du projet 10" width="100%">
+</p>
+
+#### Cycle de vie d'une image dans le projet
+
+Ce diagramme d'états suit une image depuis sa présence dans le dataset brut jusqu'à sa prédiction finale dans les approches supervisée et semi-supervisée.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_etats_cycle_image_projet.png" alt="Cycle de vie d une image UML du projet 10" width="100%">
+</p>
+
+#### Cas d'usage global
+
+Ce diagramme de cas d'usage résume les grandes actions du projet du point de vue du Data Scientist junior.
+
+<p align="center">
+  <img src="doc/uml/png/projet10_diagramme_cas_usage_global.png" alt="Cas d usage global UML du projet 10" width="100%">
 </p>
 
 ## Dataset

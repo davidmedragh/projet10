@@ -1,0 +1,72 @@
+@startuml projet10_diagramme_package_structure_livrables
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam folder {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Projet 10 - Diagramme de packages de la structure des livrables
+right footer David MEDRAGH projet10
+
+package "Workspace projet10" #EAF6FF {
+  folder "data/" as data_dir #F4FBFF {
+    artifact "mri_dataset_brain_cancer_oc/" as ds_root #FFF7E2
+    artifact "features/" as feat_dir #FFF0CC
+  }
+
+  folder "doc/" as doc_dir #F4FBFF {
+    artifact "logo/" as logos #F4F6FB
+    artifact "png/" as png_dir #FFF0CC
+    artifact "dataset_preview/" as preview_dir #FFF7E2
+    artifact "uml/" as uml_dir #EAF6FF
+    artifact "uml/png/" as uml_png_dir #FFF4DA
+  }
+
+  folder "scripts/" as scripts_dir #F4FBFF {
+    artifact "generate_pptx.py" as pptx_script #FFF0CC
+  }
+
+  folder "livrables/" as deliverables_dir #F4FBFF {
+    artifact "projet10_presentation.pptx" as pptx_out #FFF0CC
+  }
+
+  artifact "README.md" as readme #F4F6FB
+  artifact "projet10_etape1_exploration.ipynb" as nb1 #FFF7E2
+  artifact "projet10_etape2_features.ipynb" as nb2 #FFF7E2
+  artifact "projet10_etape3_clustering.ipynb" as nb3 #FFF7E2
+  artifact "projet10_etape4_semi_supervise.ipynb" as nb4 #FFF7E2
+}
+
+ds_root --> nb1
+ds_root --> nb2
+feat_dir --> nb3
+feat_dir --> nb4
+png_dir --> readme
+preview_dir --> readme
+uml_dir --> uml_png_dir
+uml_png_dir --> readme
+nb1 --> readme
+nb2 --> readme
+nb3 --> readme
+nb4 --> readme
+readme --> pptx_script
+pptx_script --> pptx_out
+
+@enduml

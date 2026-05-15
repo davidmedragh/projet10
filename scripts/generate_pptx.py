@@ -65,6 +65,7 @@ ETAPE3_ARCHITECTURE_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_di
 ETAPE3_REDUCTION_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_reduction_dimension_pca_tsne.png"
 ETAPE3_WEAKLABEL_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_labellisation_faible_seperee.png"
 ETAPE4_ARCHITECTURE_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape4_diagramme_composants_architecture_cnn_semi_supervise.png"
+GLOBAL_WORKFLOW_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "projet10_diagramme_activite_workflow_global.png"
 
 SLIDE_W = Inches(13.333)
 SLIDE_H = Inches(7.5)
@@ -715,13 +716,16 @@ def build_presentation():
         "L'approche semi-supervisée apporte un gain mesurable (+10% recall cancer)",
         "Pipeline complet validé : preprocessing → features → clustering → fine-tuning",
         "Passage à l'échelle faisable : inférence + active learning itératif",
-    ], left=Inches(0.8), top=Inches(1.8), width=Inches(11))
+    ], left=Inches(0.8), top=Inches(1.8), width=Inches(5.6))
 
     add_content_block(s, "Limites & Recommandations", [
         "Jeu test de 20 images — résultats exploratoires, pas cliniques",
         "Recommandation : collecte de labels supplémentaires via active learning",
         "Perspective : validation sur un jeu externe et collaboration radiologues",
-    ], left=Inches(0.8), top=Inches(3.8), width=Inches(11))
+    ], left=Inches(0.8), top=Inches(4.0), width=Inches(5.6))
+
+    if GLOBAL_WORKFLOW_UML_PATH.exists():
+        s.shapes.add_picture(str(GLOBAL_WORKFLOW_UML_PATH), Inches(6.8), Inches(1.75), height=Inches(4.9))
 
     slide_footer(s)
 

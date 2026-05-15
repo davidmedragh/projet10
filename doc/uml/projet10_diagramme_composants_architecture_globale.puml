@@ -1,0 +1,87 @@
+@startuml projet10_diagramme_composants_architecture_globale
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam ArrowThickness 1.2
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam folder {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam node {
+  BackgroundColor #F2F8FC
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam component {
+  BackgroundColor #E8F4F8
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Projet 10 - Diagramme de composants de l'architecture globale
+right footer David MEDRAGH projet10
+
+package "Entrees et corpus" #EAF6FF {
+  folder "data/mri_dataset_brain_cancer_oc" as raw_dataset #F4FBFF {
+    artifact "100 images\nfortement labellisees" as strong_imgs #FFF7E2
+    artifact "1406 images\nsans label" as unlabeled_imgs #FFF0CC
+    artifact "Documentation\ndataset" as ds_doc #F4F6FB
+  }
+}
+
+package "Preparation et representations" #EDF7FF {
+  component "Etape 1\nExploration" as step1 #DDEFFA
+  component "Etape 2\nPreprocessing +\nResNet50" as step2 #DDEFFA
+  artifact "features.npy" as features #FFF0CC
+  artifact "metadata.csv" as metadata #FFF7E2
+}
+
+package "Apprentissage faible et comparaison" #EEF8F1 {
+  component "Etape 3\nClustering + ARI" as step3 #E8F7EC
+  artifact "metadata_weak_labels.csv" as weak_meta #FFF0CC
+  component "Etape 4\nCNN semi-supervise" as step4 #ECF7EE
+}
+
+package "Restitution" #FFF7E8 {
+  artifact "README.md" as readme #F4F6FB
+  artifact "doc/png/\nvisuels globaux" as visuals #FFF0CC
+  artifact "doc/uml/\nPlantUML" as uml_src #EAF6FF
+  artifact "doc/uml/png/\nexports UML" as uml_png #FFF4DA
+  artifact "projet10_presentation.pptx" as pptx #FFF0CC
+}
+
+strong_imgs --> step1 : Echantillons et controle qualite
+unlabeled_imgs --> step1 : Exploration initiale
+ds_doc --> step1 : Contexte technique
+step1 --> step2 : Dataset fiabilise
+step2 --> features : Embeddings 2 048D
+step2 --> metadata : Metadonnees unifiees
+features --> step3 : Reduction + clustering
+metadata --> step3 : Labels forts
+step3 --> weak_meta : Pseudo-labels separes
+weak_meta --> step4 : Pre-entrainement
+metadata --> step4 : Split train / val / test
+raw_dataset --> step4 : Images source pour le CNN
+step4 --> readme : Resultats et recommandations
+step4 --> pptx : Support global
+readme --> visuals : Visuels transverses
+readme --> uml_src : Sources UML globales
+uml_src --> uml_png : Export PNG
+uml_png --> pptx : Selection de schemas
+
+@enduml

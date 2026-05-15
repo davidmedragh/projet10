@@ -1,0 +1,55 @@
+@startuml projet10_diagramme_cas_usage_global
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam usecase {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam actor {
+  BackgroundColor #FFF4DA
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Projet 10 - Diagramme de cas d'usage global
+right footer David MEDRAGH projet10
+
+actor "Data Scientist\njunior" as ds
+
+rectangle "Projet 10 - BrainScanAI" #F7FBFD {
+  usecase "Explorer le dataset" as uc1
+  usecase "Verifier la qualite\ndes images" as uc2
+  usecase "Extraire des features\navec ResNet50" as uc3
+  usecase "Reduire la dimension\net visualiser" as uc4
+  usecase "Tester plusieurs\nmethodes de clustering" as uc5
+  usecase "Produire des\npseudo-labels separes" as uc6
+  usecase "Entrainer un CNN\nsupervise pur" as uc7
+  usecase "Entrainer un CNN\nsemi-supervise" as uc8
+  usecase "Comparer les\nperformances finales" as uc9
+  usecase "Documenter les\nresultats et recommandations" as uc10
+}
+
+ds --> uc1
+ds --> uc2
+ds --> uc3
+ds --> uc4
+ds --> uc5
+ds --> uc6
+ds --> uc7
+ds --> uc8
+ds --> uc9
+ds --> uc10
+
+uc3 ..> uc1 : <<include>>
+uc5 ..> uc4 : <<include>>
+uc8 ..> uc6 : <<include>>
+uc9 ..> uc7 : <<include>>
+uc9 ..> uc8 : <<include>>
+uc10 ..> uc9 : <<include>>
+
+@enduml

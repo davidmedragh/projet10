@@ -1,0 +1,43 @@
+@startuml projet10_diagramme_activite_workflow_global
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Projet 10 - Diagramme d'activite du workflow global
+right footer David MEDRAGH projet10
+
+start
+:Charger le dataset IRM cerebrales;
+:Explorer la structure, la qualite et la coherence des images;
+:Construire un dataset unifie de 1 506 images;
+:Appliquer le preprocessing officiel de ResNet50;
+:Extraire des embeddings visuels 2 048D;
+:Sauvegarder features.npy et metadata.csv;
+:Standardiser les features;
+:Projeter les donnees avec PCA et t-SNE;
+:Tester K-Means et DBSCAN;
+:Evaluer la structure avec l'ARI sur les 100 labels forts;
+:Produire des pseudo-labels pour les 1 406 images sans label;
+:Appliquer un protocole anti-fuite avant l'etape 4;
+:Entrainer un modele supervise pur sur les labels forts;
+:Pre-entrainer un modele semi-supervise sur les pseudo-labels;
+:Fine-tuner ce meme modele sur les labels forts;
+:Comparer les performances finales;
+:Documenter les resultats dans le README et le support global;
+stop
+
+@enduml

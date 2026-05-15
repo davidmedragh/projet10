@@ -1,0 +1,53 @@
+@startuml projet10_diagramme_sequence_pipeline_complet
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam LifeLineBorderColor #145A86
+skinparam LifeLineBackgroundColor #EEF7FB
+skinparam ParticipantBorderColor #145A86
+skinparam ParticipantBackgroundColor #EAF6FF
+skinparam ActorBorderColor #145A86
+skinparam ActorBackgroundColor #FFF4DA
+
+title Projet 10 - Diagramme de sequence du pipeline complet
+right footer David MEDRAGH projet10
+
+actor "Data Scientist\njunior" as user
+participant "Dataset\nIRM" as dataset
+participant "Notebook\nEtape 1" as nb1
+participant "Notebook\nEtape 2" as nb2
+participant "Notebook\nEtape 3" as nb3
+participant "Notebook\nEtape 4" as nb4
+participant "README" as readme
+participant "Support global" as pptx
+
+user -> nb1 : Explorer le corpus
+nb1 -> dataset : Lire les images et verifier la coherence
+nb1 --> readme : Resumer l'exploration
+
+user -> nb2 : Extraire les features
+nb2 -> dataset : Charger les images
+nb2 -> nb2 : Appliquer preprocess ResNet50
+nb2 -> nb2 : Produire embeddings 2 048D
+nb2 --> nb3 : features.npy + metadata.csv
+
+user -> nb3 : Analyser sans supervision
+nb3 -> nb3 : Standardiser, PCA, t-SNE
+nb3 -> nb3 : K-Means, DBSCAN, ARI
+nb3 --> nb4 : metadata_weak_labels.csv
+nb3 --> readme : Resultats clustering
+
+user -> nb4 : Comparer supervise et semi-supervise
+nb4 -> dataset : Recharger les images source
+nb4 -> nb4 : Split anti-fuite
+nb4 -> nb4 : Entrainement modele A
+nb4 -> nb4 : Entrainement modele B
+nb4 --> readme : Resultats finaux
+
+readme -> pptx : Alimenter la presentation globale
+user -> pptx : Presenter la synthese du projet
+
+@enduml
