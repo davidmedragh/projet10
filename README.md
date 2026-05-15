@@ -95,6 +95,11 @@
   - [Évaluation : score ARI](#évaluation--score-ari)
   - [Mapping cluster → classe](#mapping-cluster--classe)
   - [Pseudo-labellisation](#pseudo-labellisation)
+  - [Synthèses visuelles](#synthèses-visuelles-2)
+    - [Architecture générale de l'étape 3](#architecture-générale-de-létape-3)
+    - [Architecture détaillée de l'étape 3](#architecture-détaillée-de-létape-3)
+    - [Stack technique de l'étape 3](#stack-technique-de-létape-3)
+    - [Stack technique de l'étape 3 — variante](#stack-technique-de-létape-3--variante)
   - [Discussion](#discussion)
   - [Diagrammes UML](#diagrammes-uml-2)
     - [Workflow global de l'analyse non supervisée](#workflow-global-de-lanalyse-non-supervisée)
@@ -732,6 +737,42 @@ J'attribue les pseudo-labels K-Means **uniquement aux 1 406 images non labellis�
 
 Le résultat est sauvegardé dans `data/features/metadata_weak_labels.csv`, un fichier **séparé** du jeu fortement labellisé (`metadata.csv` reste intact).
 
+### Synthèses visuelles
+
+Deux infographies de synthèse complètent cette étape. Elles donnent une lecture plus visuelle du pipeline de clustering, de la standardisation jusqu'à la pseudo-labellisation, en gardant la séparation entre labels forts et labels faibles.
+
+#### Architecture générale de l'étape 3
+
+Cette première vue d'ensemble résume les entrées de l'étape 3, la standardisation des features, la réduction de dimension, le clustering, l'évaluation par ARI et la production du jeu faiblement labellisé.
+
+<p align="center">
+  <img src="doc/png/projet10_etape3_architecture_generale.png" alt="Architecture generale de l etape 3" width="100%">
+</p>
+
+#### Architecture détaillée de l'étape 3
+
+Cette vue détaillée met davantage en avant les transformations intermédiaires, les choix de méthodes, les contrôles d'évaluation et la logique de séparation des sorties produites pendant le clustering.
+
+<p align="center">
+  <img src="doc/png/projet10_etape3_architecture_detaillee.png" alt="Architecture detaillee de l etape 3" width="100%">
+</p>
+
+#### Stack technique de l'étape 3
+
+Cette vue de synthèse recentre l'attention sur l'environnement Python, l'orchestration du notebook, la standardisation, la réduction de dimension, le clustering, l'évaluation et la restitution des résultats.
+
+<p align="center">
+  <img src="doc/png/projet10_etape3_stack_technique.png" alt="Stack technique de l etape 3" width="100%">
+</p>
+
+#### Stack technique de l'étape 3 — variante
+
+Cette variante plus détaillée donne une autre lecture de la chaîne technique mobilisée pendant l'analyse non supervisée, du prétraitement des données jusqu'à la visualisation et l'interprétation.
+
+<p align="center">
+  <img src="doc/png/projet10_etape3_stack_technique_2.png" alt="Stack technique de l etape 3 variante" width="100%">
+</p>
+
 ### Discussion
 
 **Pourquoi l'ARI est modéré (0.15) :**
@@ -845,6 +886,10 @@ Ce diagramme de cas d'usage résume les actions principales réalisées dans l'�
 |---------|-------------|
 | `projet10_etape3_clustering.ipynb` | Notebook complet : standardisation, PCA, t-SNE, K-Means, DBSCAN, ARI, pseudo-labellisation |
 | `data/features/metadata_weak_labels.csv` | 1 406 images avec pseudo-labels (jeu faiblement labellisé, séparé) |
+| `doc/png/projet10_etape3_architecture_generale.png` | Vue d'ensemble de l'architecture de l'étape 3 |
+| `doc/png/projet10_etape3_architecture_detaillee.png` | Vue détaillée de l'architecture de l'étape 3 |
+| `doc/png/projet10_etape3_stack_technique.png` | Vue d'ensemble de la stack technique de l'étape 3 |
+| `doc/png/projet10_etape3_stack_technique_2.png` | Variante détaillée de la stack technique de l'étape 3 |
 | `doc/uml/` | Sources PlantUML des diagrammes de l'étape 3 |
 | `doc/uml/png/` | Exports PNG des diagrammes de l'étape 3 |
 
