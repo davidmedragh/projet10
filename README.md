@@ -125,6 +125,20 @@
   - [Comparaison des résultats](#comparaison-des-résultats)
   - [Justification métier](#justification-métier)
   - [Recommandations — Passage à l'échelle](#recommandations--passage-à-léchelle)
+  - [Diagrammes UML](#diagrammes-uml-3)
+    - [Workflow global de l'apprentissage semi-supervisé](#workflow-global-de-lapprentissage-semi-supervisé)
+    - [Architecture technique CNN semi-supervisée](#architecture-technique-cnn-semi-supervisée)
+    - [Split et logique anti-fuite](#split-et-logique-anti-fuite)
+    - [Préparation des DataLoaders](#préparation-des-dataloaders)
+    - [Fine-tuning de ResNet50](#fine-tuning-de-resnet50)
+    - [Entraînement supervisé pur](#entraînement-supervisé-pur)
+    - [Entraînement semi-supervisé](#entraînement-semi-supervisé)
+    - [Évaluation des métriques](#évaluation-des-métriques)
+    - [Comparaison supervisé pur vs semi-supervisé](#comparaison-supervisé-pur-vs-semi-supervisé)
+    - [Séquence du pipeline semi-supervisé](#séquence-du-pipeline-semi-supervisé)
+    - [Cycle d'une image dans l'entraînement](#cycle-dune-image-dans-lentraînement)
+    - [Structure des sorties semi-supervisées](#structure-des-sorties-semi-supervisées)
+    - [Cas d'usage de l'apprentissage semi-supervisé](#cas-dusage-de-lapprentissage-semi-supervisé)
   - [Livrables produits](#livrables-produits-3)
 
 ---
@@ -998,8 +1012,118 @@ Dans un contexte de détection de tumeurs (CurelyticsIA), un **Faux Négatif** (
 
 L'approche recommandée est le **scénario 2 (active learning itératif)** : inférer avec le modèle, cibler les images les plus incertaines pour vérification humaine, réentraîner, itérer.
 
+### Diagrammes UML
+
+Pour documenter l'étape 4, j'ai préparé une série de diagrammes UML en PlantUML. Ils détaillent la logique anti-fuite, la préparation des DataLoaders, le fine-tuning de ResNet50, les deux protocoles d'entraînement et la comparaison finale entre approche supervisée pure et approche semi-supervisée.
+
+#### Workflow global de l'apprentissage semi-supervisé
+
+Ce diagramme d'activité synthétise le déroulé complet de l'étape 4, du split initial jusqu'à la comparaison finale des deux modèles.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_workflow_apprentissage_semi_supervise.png" alt="Workflow global de l apprentissage semi-supervise pour l etape 4" width="100%">
+</p>
+
+#### Architecture technique CNN semi-supervisée
+
+Ce diagramme de composants montre comment le notebook orchestre les jeux forts et faibles, le re-clustering, les DataLoaders, ResNet50, les métriques et les sorties finales.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_composants_architecture_cnn_semi_supervise.png" alt="Architecture technique CNN semi-supervisee pour l etape 4" width="100%">
+</p>
+
+#### Split et logique anti-fuite
+
+Ce diagramme d'activité met en avant la correction méthodologique essentielle de l'étape 4 : split fixe, exclusion du test du re-clustering et remapping strictement limité au train.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_split_et_anti_fuite.png" alt="Split et logique anti-fuite pour l etape 4" width="100%">
+</p>
+
+#### Préparation des DataLoaders
+
+Ce diagramme d'activité résume la construction des jeux `strong`, `weak`, `val` et `test`, ainsi que l'utilisation du `WeightedRandomSampler` pour le jeu faible.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_preparation_dataloaders.png" alt="Preparation des DataLoaders pour l etape 4" width="100%">
+</p>
+
+#### Fine-tuning de ResNet50
+
+Ce diagramme d'activité explicite la configuration commune des modèles A et B : poids ImageNet, couches gelées, `layer4 + fc` dégelées, loss et optimiseur.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_fine_tuning_resnet50.png" alt="Fine-tuning de ResNet50 pour l etape 4" width="100%">
+</p>
+
+#### Entraînement supervisé pur
+
+Ce diagramme d'activité décrit le protocole du modèle A : entraînement sur 64 images fortes, validation sur 16 images et test final sur 20 images jamais vues.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_entrainement_supervise_pur.png" alt="Entrainement supervise pur pour l etape 4" width="100%">
+</p>
+
+#### Entraînement semi-supervisé
+
+Ce diagramme d'activité décrit le protocole du modèle B : pré-entraînement sur 1 406 pseudo-labels, puis fine-tuning supervisé sur les 64 images fortes.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_entrainement_semi_supervise.png" alt="Entrainement semi-supervise pour l etape 4" width="100%">
+</p>
+
+#### Évaluation des métriques
+
+Ce diagramme d'activité résume le calcul et l'interprétation des métriques retenues : F1 macro, accuracy, recall cancer, précision cancer et matrices de confusion.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_evaluation_metriques.png" alt="Evaluation des metriques pour l etape 4" width="100%">
+</p>
+
+#### Comparaison supervisé pur vs semi-supervisé
+
+Ce diagramme d'activité structure la comparaison finale entre le modèle A et le modèle B, avec un accent particulier sur le recall cancer.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_activite_comparaison_supervise_vs_semi_supervise.png" alt="Comparaison supervise pur vs semi-supervise pour l etape 4" width="100%">
+</p>
+
+#### Séquence du pipeline semi-supervisé
+
+Ce diagramme de séquence représente les interactions entre le notebook, les métadonnées, le re-clustering, les DataLoaders, les deux modèles ResNet50 et l'évaluateur de métriques.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_sequence_pipeline_semi_supervise.png" alt="Sequence du pipeline semi-supervise pour l etape 4" width="100%">
+</p>
+
+#### Cycle d'une image dans l'entraînement
+
+Ce diagramme d'états suit une image depuis sa source jusqu'à sa prédiction finale, en distinguant image forte, image faible et image de test.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_etats_cycle_image_dans_entrainement.png" alt="Cycle d une image dans l entrainement pour l etape 4" width="100%">
+</p>
+
+#### Structure des sorties semi-supervisées
+
+Ce diagramme de packages relie les jeux d'entrée, le notebook de l'étape 4, le tableau de métriques, les matrices de confusion et le support de présentation global.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_package_structure_sorties_semi_supervise.png" alt="Structure des sorties semi-supervisees pour l etape 4" width="100%">
+</p>
+
+#### Cas d'usage de l'apprentissage semi-supervisé
+
+Ce diagramme de cas d'usage résume les actions principales réalisées dans l'étape 4 du point de vue du Data Scientist junior.
+
+<p align="center">
+  <img src="doc/uml/png/etape4_diagramme_cas_usage_apprentissage_semi_supervise.png" alt="Cas d usage de l apprentissage semi-supervise pour l etape 4" width="100%">
+</p>
+
 ### Livrables produits
 
 | Fichier | Description |
 |---------|-------------|
 | `projet10_etape4_semi_supervise.ipynb` | Notebook complet : split, re-clustering, CNN, comparaison, recommandations |
+| `doc/uml/` | Sources PlantUML des diagrammes de l'étape 4 |
+| `doc/uml/png/` | Exports PNG des diagrammes de l'étape 4 |

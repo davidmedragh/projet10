@@ -1,0 +1,94 @@
+@startuml etape4_diagramme_composants_architecture_cnn_semi_supervise
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam ArrowThickness 1.2
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam folder {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam node {
+  BackgroundColor #F2F8FC
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam component {
+  BackgroundColor #E8F4F8
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+skinparam database {
+  BackgroundColor #EEF7FB
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+
+title Etape 4 - Diagramme de composants de l'architecture CNN semi-supervisee
+right footer David MEDRAGH projet10
+
+package "Entrees de l'etape 4" #EAF6FF {
+  folder "data/features" as in_dir #F4FBFF {
+    artifact "metadata.csv\n100 labels forts" as strong_meta #FFF7E2
+    artifact "metadata_weak_labels.csv\n1406 weak labels" as weak_meta #FFF0CC
+    artifact "features.npy\nsupport du re-clustering" as features_npy #FFF0CC
+  }
+  folder "data/mri_dataset_brain_cancer_oc" as raw_dir #F4FBFF {
+    artifact "images IRM source" as raw_images #F4F6FB
+  }
+}
+
+package "Notebook et preparation" #EDF7FF {
+  component "projet10_etape4_semi_supervise.ipynb" as nb4 #DDEFFA
+  component "Split stratifie\n64 / 16 / 20" as split #EAFBF2
+  component "Re-clustering\nanti-fuite" as reclustering #EEF8FF
+  component "DataLoaders\nstrong / weak / test" as loaders #EAFBF2
+}
+
+package "Modelisation CNN" #EEF8F1 {
+  component "ResNet50\nlayer4 + fc" as resnet #E8F7EC
+  component "Modele A\nsupervise pur" as modelA #ECF7EE
+  component "Modele B\nsemi-supervise" as modelB #ECF7EE
+  component "Criterion + Adam\nEarly stopping" as train_cfg #F4FBF7
+}
+
+package "Evaluation et sorties" #FFF7E8 {
+  component "Metriques\nF1 / Accuracy /\nRecall cancer" as metrics #FFF4DA
+  artifact "Matrices de confusion" as confmat #EAF6FF
+  artifact "README.md" as out_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as out_pptx #FFF0CC
+}
+
+strong_meta --> nb4 : Labels forts
+weak_meta --> nb4 : Pseudo-labels faibles
+features_npy --> reclustering : Support du re-fit K-Means
+nb4 --> split : Train / val / test
+split --> reclustering : Exclure les 20 test
+reclustering --> loaders : Weak labels propres
+raw_images --> loaders : Chargement image par image
+loaders --> resnet : Tenseurs preprocesses
+train_cfg --> modelA : Protocole d'entrainement
+train_cfg --> modelB : Protocole d'entrainement
+resnet --> modelA : Initialisation ImageNet
+resnet --> modelB : Initialisation ImageNet
+modelA --> metrics : Evaluation finale
+modelB --> metrics : Evaluation finale
+metrics --> confmat : Resultats comparatifs
+metrics --> out_readme : Synthese academique
+confmat --> out_pptx : Restitution finale
+
+@enduml

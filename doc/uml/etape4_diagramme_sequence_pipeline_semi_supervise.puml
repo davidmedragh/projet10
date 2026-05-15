@@ -1,0 +1,47 @@
+@startuml etape4_diagramme_sequence_pipeline_semi_supervise
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam sequence {
+  ArrowColor #145A86
+  LifeLineBorderColor #145A86
+  LifeLineBackgroundColor #F7FBFD
+  ParticipantBorderColor #145A86
+  ParticipantBackgroundColor #EAF6FF
+  ActorBorderColor #145A86
+  ActorBackgroundColor #EEF7FB
+}
+
+title Etape 4 - Diagramme de sequence du pipeline semi-supervise
+right footer David MEDRAGH projet10
+
+participant "Notebook\netape 4" as NB
+participant "metadata.csv" as STRONG
+participant "metadata_weak_labels.csv" as WEAK
+participant "K-Means\nre-fit" as KM
+participant "DataLoaders" as DL
+participant "ResNet50 A" as A
+participant "ResNet50 B" as B
+participant "Evaluator" as EVAL
+participant "README / PPTX" as OUT
+
+NB -> STRONG : Charger labels forts
+STRONG --> NB : 100 images
+NB -> STRONG : Split 64 / 16 / 20
+NB -> KM : Re-fit sans les 20 test
+KM --> NB : Weak labels propres
+NB -> WEAK : Charger / regenerer weak labels
+WEAK --> NB : 1406 pseudo-labels
+NB -> DL : Construire strong / weak / test loaders
+DL --> NB : Batches preprocesses
+NB -> A : Entrainer supervise pur
+A --> EVAL : Predictions test
+NB -> B : Pre-entrainer weak puis fine-tuner fort
+B --> EVAL : Predictions test
+EVAL --> NB : F1 / Accuracy / Recall / Precision
+NB -> OUT : Synthese des resultats
+
+@enduml

@@ -1,0 +1,55 @@
+@startuml etape4_diagramme_cas_usage_apprentissage_semi_supervise
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam actor {
+  BorderColor #145A86
+  BackgroundColor #EEF7FB
+  FontColor #0B2A45
+}
+skinparam usecase {
+  BorderColor #145A86
+  BackgroundColor #EAF6FF
+  FontColor #0B2A45
+}
+
+title Etape 4 - Diagramme de cas d'usage de l'apprentissage semi-supervise
+right footer David MEDRAGH projet10
+
+left to right direction
+actor "Data Scientist\njunior" as DS
+
+rectangle "Etape 4 - Semi-supervise" {
+  usecase "Creer un split\nanti-fuite" as UC1
+  usecase "Re-clusteriser\nsans le test" as UC2
+  usecase "Regenerer les\nweak labels" as UC3
+  usecase "Construire les\nDataLoaders" as UC4
+  usecase "Configurer\nResNet50" as UC5
+  usecase "Entrainer le modele A\nsupervise pur" as UC6
+  usecase "Entrainer le modele B\nsemi-supervise" as UC7
+  usecase "Evaluer avec F1 /\nRecall / Accuracy" as UC8
+  usecase "Comparer A et B" as UC9
+  usecase "Formuler une\nrecommandation metier" as UC10
+}
+
+DS --> UC1
+DS --> UC2
+DS --> UC3
+DS --> UC4
+DS --> UC5
+DS --> UC6
+DS --> UC7
+DS --> UC8
+DS --> UC9
+DS --> UC10
+
+UC3 .> UC2 : <<include>>
+UC7 .> UC5 : <<include>>
+UC6 .> UC5 : <<include>>
+UC9 .> UC8 : <<include>>
+UC10 .> UC9 : <<include>>
+
+@enduml

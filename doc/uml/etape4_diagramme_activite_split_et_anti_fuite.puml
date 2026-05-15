@@ -1,0 +1,40 @@
+@startuml etape4_diagramme_activite_split_et_anti_fuite
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite du split et de la logique anti-fuite
+right footer David MEDRAGH projet10
+
+start
+:Charger les 100 images fortement labellisees;
+:Appliquer un split stratifie 80 / 20;
+:Reserver les 20 images test pour l'evaluation finale;
+:Resplitter les 80 restantes en 64 train / 16 val;
+:Retirer les 20 images test du re-clustering;
+:Refaire la standardisation sur 1 486 images;
+:Re-fit K-Means sans les 20 test;
+:Refaire le mapping cluster -> classe sur les 64 train;
+if (Le test a-t-il influence les pseudo-labels ?) then (Non)
+  :Valider le protocole anti-fuite;
+else (Oui)
+  :Stopper et corriger la procedure;
+endif
+:Produire un jeu faible propre pour l'entrainement;
+stop
+
+@enduml

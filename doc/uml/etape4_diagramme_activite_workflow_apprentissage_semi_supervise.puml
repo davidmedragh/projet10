@@ -1,0 +1,47 @@
+@startuml etape4_diagramme_activite_workflow_apprentissage_semi_supervise
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite du workflow d'apprentissage semi-supervise
+right footer David MEDRAGH projet10
+
+start
+:Charger metadata.csv et metadata_weak_labels.csv;
+:Definir RANDOM_STATE = 42 et les hyperparametres;
+:Creer le split fort stratifie train / val / test;
+:Recalculer K-Means sans les 20 images test;
+:Refaire le mapping cluster -> classe sur les 64 images train;
+:Regenerer des weak labels propres pour 1 406 images;
+:Construire les Datasets PyTorch et les DataLoaders;
+:Charger ResNet50 et configurer layer4 + fc;
+fork
+  :Entrainer le modele A sur 64 images fortes;
+  :Valider sur 16 images fortes;
+  :Evaluer sur les 20 images test;
+fork again
+  :Pre-entrainer le modele B sur 1 406 weak labels;
+  :Fine-tuner le modele B sur 64 images fortes;
+  :Valider sur 16 images fortes;
+  :Evaluer sur les 20 images test;
+end fork
+:Comparer F1, accuracy, recall cancer et precision;
+:Analyser les matrices de confusion;
+:Formuler la recommandation de passage a l'echelle;
+stop
+
+@enduml

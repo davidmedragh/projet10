@@ -1,0 +1,43 @@
+@startuml etape4_diagramme_activite_entrainement_semi_supervise
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite de l'entrainement semi-supervise
+right footer David MEDRAGH projet10
+
+start
+:Creer le modele B;
+:Phase 1 - pre-entrainer sur dl_weak (1406 images);
+:Boucler 10 epoques sans early stopping;
+:Obtenir une initialisation orientee cancer / normal;
+:Phase 2 - fine-tuner sur dl_train_strong (64 images);
+:Evaluer a chaque epoque sur dl_val (16 images);
+if (val_loss baisse ?) then (Oui)
+  :Sauvegarder le meilleur modele B;
+else (Non)
+  :Incrementer le compteur patience;
+endif
+if (Patience depassee ?) then (Oui)
+  :Stopper le fine-tuning;
+else (Non)
+  :Poursuivre le fine-tuning;
+endif
+:Evaluer le meilleur modele B sur dl_test (20 images);
+stop
+
+@enduml

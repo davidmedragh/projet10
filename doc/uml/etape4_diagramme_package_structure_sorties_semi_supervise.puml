@@ -1,0 +1,54 @@
+@startuml etape4_diagramme_package_structure_sorties_semi_supervise
+!theme plain
+
+skinparam style strictuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam package {
+  BackgroundColor #F7FBFD
+  BorderColor #145A86
+  FontColor #0B2A45
+}
+skinparam artifact {
+  BackgroundColor #FFF7E2
+  BorderColor #C88B00
+  FontColor #5C4300
+}
+
+title Etape 4 - Diagramme de packages des entrees et sorties semi-supervisees
+right footer David MEDRAGH projet10
+
+package "data/features" #EAF6FF {
+  artifact "metadata.csv\njeu fortement labellise" as pk_strong #FFF7E2
+  artifact "metadata_weak_labels.csv\njeu faiblement labellise" as pk_weak #FFF0CC
+  artifact "features.npy\nsupport re-clustering" as pk_feat #FFF0CC
+}
+
+package "Notebook et support" #EEF7FB {
+  artifact "projet10_etape4_semi_supervise.ipynb" as pk_nb #EAF6FF
+  artifact "README.md" as pk_readme #F4F6FB
+  artifact "projet10_presentation.pptx" as pk_pptx #FFF0CC
+}
+
+package "Sorties analytiques" #F4FBF7 {
+  artifact "Tableau metriques\nA vs B" as pk_metrics #FFF4DA
+  artifact "Matrices de confusion" as pk_conf #EAFBF2
+  artifact "Recommandation\npassage a l'echelle" as pk_scale #FFF7E2
+}
+
+pk_strong --> pk_nb
+pk_weak --> pk_nb
+pk_feat --> pk_nb
+pk_nb --> pk_metrics
+pk_nb --> pk_conf
+pk_nb --> pk_scale
+pk_metrics --> pk_readme
+pk_conf --> pk_readme
+pk_scale --> pk_readme
+pk_metrics --> pk_pptx
+pk_conf --> pk_pptx
+pk_scale --> pk_pptx
+
+@enduml

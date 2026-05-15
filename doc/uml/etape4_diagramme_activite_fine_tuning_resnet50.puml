@@ -1,0 +1,38 @@
+@startuml etape4_diagramme_activite_fine_tuning_resnet50
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite du fine-tuning de ResNet50
+right footer David MEDRAGH projet10
+
+start
+:Charger ResNet50 avec les poids ImageNet;
+:Geler layer1 a layer3;
+:Degeler layer4 et la couche fc;
+:Remplacer fc par Linear(2048, 2);
+:Configurer CrossEntropyLoss;
+:Configurer Adam avec lr = 1e-4;
+if (Modele A ou B ?) then (A)
+  :Entrainer sur le jeu fort;
+else (B)
+  :Pre-entrainer sur weak puis fine-tuner sur fort;
+endif
+:Sauvegarder le meilleur etat selon val_loss;
+stop
+
+@enduml

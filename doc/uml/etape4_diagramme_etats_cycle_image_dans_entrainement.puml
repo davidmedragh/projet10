@@ -1,0 +1,41 @@
+@startuml etape4_diagramme_etats_cycle_image_dans_entrainement
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam state {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  FontColor #0B2A45
+  StartColor #2E7D32
+  EndColor #C62828
+}
+
+title Etape 4 - Diagramme d'etats du cycle d'une image dans l'entrainement
+right footer David MEDRAGH projet10
+
+[*] --> Image_source
+
+state "Image source" as Image_source
+state "Image forte" as Image_forte
+state "Image faible" as Image_faible
+state "Image de test" as Image_test
+state "Image preprocessee" as Image_prepro
+state "Image vue par le modele" as Image_train
+state "Prediction produite" as Prediction
+state "Evaluation finale" as Eval
+
+Image_source --> Image_forte : metadata.csv
+Image_source --> Image_faible : metadata_weak_labels.csv
+Image_forte --> Image_test : Split test 20 images
+Image_forte --> Image_prepro : Train / val
+Image_faible --> Image_prepro : Pre-train weak
+Image_prepro --> Image_train : DataLoader + transforms
+Image_train --> Prediction : Forward pass
+Prediction --> Eval : Si image test
+Image_test --> Image_prepro : Test loader
+Eval --> [*] : Metriques et confusion
+
+@enduml

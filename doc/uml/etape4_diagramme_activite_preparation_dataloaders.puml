@@ -1,0 +1,35 @@
+@startuml etape4_diagramme_activite_preparation_dataloaders
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite de la preparation des DataLoaders
+right footer David MEDRAGH projet10
+
+start
+:Definir le Dataset custom BrainMRIDataset;
+:Charger les images via leur path;
+:Appliquer weights.transforms() de ResNet50;
+:Creer dl_train_strong (64) avec shuffle = True;
+:Creer dl_val (16) pour early stopping;
+:Creer dl_test (20) avec shuffle = False;
+:Creer dl_weak (1406) avec WeightedRandomSampler;
+:Verifier les shapes des batches et les labels;
+:Utiliser les memes transforms pour A et B;
+stop
+
+@enduml

@@ -62,6 +62,7 @@ OUTPUTS_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape2_diagramme_pack
 ETAPE3_ARCHITECTURE_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_composants_architecture_clustering.png"
 ETAPE3_REDUCTION_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_reduction_dimension_pca_tsne.png"
 ETAPE3_WEAKLABEL_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape3_diagramme_activite_labellisation_faible_seperee.png"
+ETAPE4_ARCHITECTURE_UML_PATH = PROJECT_ROOT / "doc" / "uml" / "png" / "etape4_diagramme_composants_architecture_cnn_semi_supervise.png"
 
 SLIDE_W = Inches(13.333)
 SLIDE_H = Inches(7.5)
@@ -643,7 +644,8 @@ def build_presentation():
     add_separator(prs, blank,
                   "ÉTAPE 4 — SEMI-SUPERVISÉ",
                   "Du clustering au CNN fine-tuné",
-                  "Supervisé pur vs semi-supervisé — comparaison rigoureuse")
+                  "Supervisé pur vs semi-supervisé — comparaison rigoureuse",
+                  ETAPE4_ARCHITECTURE_UML_PATH)
 
     # ═══════════════════════════════════════════
     # SLIDE 15 — RÉSULTATS & BILAN
@@ -671,6 +673,8 @@ def build_presentation():
         "L'approche semi-supervisée apporte un gain mesurable (+10% recall cancer)",
         "Passage à l'échelle faisable : inférence + active learning itératif",
         "Limites : jeu test de 20 images, résultats exploratoires (pas cliniques)",
+        "Pipeline complet validé : preprocessing → features → clustering → fine-tuning",
+        "Recommandation : collecte de labels supplémentaires pour renforcer la fiabilité",
     ], left=Inches(0.8), top=Inches(5.3), width=Inches(11))
 
     slide_footer(s)

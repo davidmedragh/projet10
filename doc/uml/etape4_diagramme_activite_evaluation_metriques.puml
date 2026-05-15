@@ -1,0 +1,39 @@
+@startuml etape4_diagramme_activite_evaluation_metriques
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam ArrowColor #145A86
+skinparam activityFontColor #0B2A45
+skinparam activity {
+  BackgroundColor #EAF6FF
+  BorderColor #145A86
+  DiamondBackgroundColor #FFF4DA
+  DiamondBorderColor #C88B00
+  StartColor #2E7D32
+  EndColor #C62828
+  BarColor #4A9EC9
+}
+
+title Etape 4 - Diagramme d'activite de l'evaluation des metriques
+right footer David MEDRAGH projet10
+
+start
+:Charger les predictions du modele A sur 20 images test;
+:Charger les predictions du modele B sur 20 images test;
+:Calculer accuracy pour chaque modele;
+:Calculer F1 macro pour chaque modele;
+:Calculer recall de la classe cancer;
+:Calculer precision de la classe cancer;
+:Construire les matrices de confusion;
+if (Recall cancer du modele B > modele A ?) then (Oui)
+  :Conclure a un gain metier du semi-supervise;
+else (Non)
+  :Conclure a un gain non etabli;
+endif
+:Resumer les resultats dans un tableau comparatif;
+stop
+
+@enduml
