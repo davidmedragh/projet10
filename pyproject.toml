@@ -26,8 +26,6 @@ dependencies = [
     "pillow>=12.2.0",
     # Visualisation interactive : scatter plots de clusters (recommandé par l'école)
     "plotly>=6.7.0",
-    # Génération du support de présentation PowerPoint (.pptx)
-    "python-pptx>=1.0.2",
     # Machine learning : PCA, K-Means, DBSCAN, ARI, StandardScaler (recommandé par l'école)
     "scikit-learn>=1.8.0",
     # Visualisation statistique : scatter plots, heatmaps (recommandé par l'école)

@@ -54,6 +54,7 @@
   - [Échantillon visuel](#échantillon-visuel)
   - [Synthèses visuelles](#synthèses-visuelles)
     - [Architecture détaillée de l'étape 1](#architecture-détaillée-de-létape-1)
+    - [Architecture technique de l'étape 1](#architecture-technique-de-létape-1)
     - [Stack technique de l'étape 1](#stack-technique-de-létape-1)
   - [Diagrammes UML](#diagrammes-uml)
     - [Architecture de l'étape 1](#architecture-de-létape-1)
@@ -242,7 +243,7 @@ J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de mo
 
 La version remplie de la fiche d'auto-évaluation est disponible dans :
 
-- [`livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf)
+- [`livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf)
 
 ### Convention de nommage
 
@@ -464,6 +465,14 @@ Cette vue regroupe, sur une seule infographie, la source de données, l'environn
 
 <p align="center">
   <img src="doc/png/architecture_detaillé_étape1.png" alt="Architecture detaillee de l etape 1" width="100%">
+</p>
+
+#### Architecture technique de l'étape 1
+
+Cette vue complémentaire détaille l'architecture technique de l'étape 1 : les composants logiciels, les flux de données et les interactions entre le notebook, les bibliothèques et les sorties produites.
+
+<p align="center">
+  <img src="doc/png/architecture_technique_étape1.png" alt="Architecture technique de l etape 1" width="100%">
 </p>
 
 #### Stack technique de l'étape 1
@@ -1283,7 +1292,7 @@ Ce diagramme de cas d'usage résume les actions principales réalisées dans l'�
 
 ## Auto-évaluation
 
-La fiche d'auto-évaluation remplie est disponible dans [`livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P7_DSML_FAE_remplie.pdf).
+La fiche d'auto-évaluation remplie est disponible dans [`livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf).
 
 Les critères ci-dessous sont relus à partir de l'état réel du dépôt, des notebooks et du support global. Quand un critère du formulaire parle de "valeurs manquantes" ou "outliers", je l'interprète dans le contexte d'un projet d'imagerie médicale : images corrompues, formats incohérents, dimensions anormales, doublons ou hétérogénéité technique.
 
