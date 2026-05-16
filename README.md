@@ -194,6 +194,10 @@ Savoir prétraiter les données et extraire des représentations pertinentes me 
 
 Je suis Data Scientist junior spécialisé en Computer Vision au sein de **CurelyticsIA**, une startup innovante dans le domaine de la e-santé. L'entreprise développe des solutions basées sur l'intelligence artificielle pour assister les professionnels de santé dans l'analyse d'images médicales, en particulier des IRM.
 
+<p align="center">
+  <img src="doc/png/curlitics_ia.png" alt="Illustration CurelyticsIA" width="100%">
+</p>
+
 Dans le cadre d'un nouveau projet R&D, CurelyticsIA souhaite explorer la possibilité d'automatiser la détection de tumeurs du cerveau. Un ensemble conséquent de radios a été collecté : la majorité de ces images ne dispose d'aucun étiquetage, tandis qu'un sous-ensemble limité a été annoté par des radiologues experts.
 
 ### Ma mission
