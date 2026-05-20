@@ -25,7 +25,7 @@
 - [Objectifs pédagogiques](#objectifs-pédagogiques)
 - [Livrables](#livrables)
   - [Livrables à déposer](#livrables-à-déposer)
-  - [Support de présentation](#support-de-présentation)
+  - [Livrables de la soutenance](#livrables-de-la-soutenance)
   - [Fiche d'auto-évaluation](#fiche-dauto-évaluation)
   - [Certificats de réussite](#certificats-de-réussite)
   - [Convention de nommage](#convention-de-nommage)
@@ -245,15 +245,14 @@ J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de mo
 | 2 | Notebook contenant : approche semi-supervisée | `.ipynb` |
 | 3 | Support de présentation | `.pdf` ou `.ppt` (15 slides max) |
 
-### Support de présentation
+### Livrables de la soutenance
 
-Le support global de soutenance est disponible ci-dessous en vignette cliquable :
+[![Aperçu de la présentation du projet 10](doc/png/projet10_presentation.png)](livrables/projet10_presentation.pptx)
 
-<p align="center">
-  <a href="livrables/projet10_presentation.pptx">
-    <img src="doc/png/projet10_presentation.png" alt="Aperçu cliquable du support de présentation du projet 10" width="100%">
-  </a>
-</p>
+| Livrable | Lien |
+|---|---|
+| **Support de présentation** | [`livrables/projet10_presentation.pptx`](livrables/projet10_presentation.pptx) |
+| **Fiche d'auto-évaluation** | [`livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf) |
 
 ### Fiche d'auto-évaluation
 
