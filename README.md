@@ -25,6 +25,7 @@
 - [Objectifs pédagogiques](#objectifs-pédagogiques)
 - [Livrables](#livrables)
   - [Livrables à déposer](#livrables-à-déposer)
+  - [Support de présentation](#support-de-présentation)
   - [Fiche d'auto-évaluation](#fiche-dauto-évaluation)
   - [Certificats de réussite](#certificats-de-réussite)
   - [Convention de nommage](#convention-de-nommage)
@@ -243,6 +244,16 @@ J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de mo
 | 1 | Notebook contenant : extraction des features, preprocessing adapté au(x) modèle(s) utilisé(s), analyse non-supervisée, entraînement de modèles de clustering | `.ipynb` |
 | 2 | Notebook contenant : approche semi-supervisée | `.ipynb` |
 | 3 | Support de présentation | `.pdf` ou `.ppt` (15 slides max) |
+
+### Support de présentation
+
+Le support global de soutenance est disponible ci-dessous en vignette cliquable :
+
+<p align="center">
+  <a href="livrables/projet10_presentation.pptx">
+    <img src="doc/png/projet10_presentation.png" alt="Aperçu cliquable du support de présentation du projet 10" width="100%">
+  </a>
+</p>
 
 ### Fiche d'auto-évaluation
 
