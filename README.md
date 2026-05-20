@@ -26,6 +26,7 @@
 - [Livrables](#livrables)
   - [Livrables à déposer](#livrables-à-déposer)
   - [Fiche d'auto-évaluation](#fiche-dauto-évaluation)
+  - [Certificats de réussite](#certificats-de-réussite)
   - [Convention de nommage](#convention-de-nommage)
   - [Soutenance](#soutenance)
 - [Vue d'ensemble du projet](#vue-densemble-du-projet)
@@ -248,6 +249,13 @@ J'ai choisi l'**Option B — Mission fictive** : *Mission d'exploration et de mo
 La version remplie de la fiche d'auto-évaluation est disponible dans :
 
 - [`livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf`](livrables/Fiche_auto_evaluation_P10_DSML_FAE_remplie.pdf)
+
+### Certificats de réussite
+
+Les certificats associés aux cours mobilisés pour ce projet sont disponibles dans :
+
+- [`livrables/Initiez_vous_au_Deep_Learnin.pdf`](livrables/Initiez_vous_au_Deep_Learnin.pdf)
+- [`livrables/Initiez_vous_a_l_apprentissage_semi_supervise.pdf`](livrables/Initiez_vous_a_l_apprentissage_semi_supervise.pdf)
 
 ### Convention de nommage
 
