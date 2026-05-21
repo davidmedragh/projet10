@@ -39,10 +39,6 @@ package "Workspace projet10" #EAF6FF {
     artifact "uml/png/" as uml_png_dir #FFF4DA
   }
 
-  folder "scripts/" as scripts_dir #F4FBFF {
-    artifact "generate_pptx.py" as pptx_script #FFF0CC
-  }
-
   folder "livrables/" as deliverables_dir #F4FBFF {
     artifact "projet10_presentation.pptx" as pptx_out #FFF0CC
   }
@@ -66,7 +62,5 @@ nb1 --> readme
 nb2 --> readme
 nb3 --> readme
 nb4 --> readme
-readme --> pptx_script
-pptx_script --> pptx_out
 
 @enduml

@@ -51,10 +51,6 @@ package "Environnement Virtuel (uv - Python 3.11)" #F3F8FD {
     node "Moteur d'Exploration (EDA)" #EAF3FB {
         component "projet10_etape1_exploration.ipynb\n(Pillow, Torchvision, Pandas)" as notebook #DDEFFA
     }
-    
-    node "Moteur de Restitution" #F9F1DF {
-        component "scripts/generate_pptx.py\n(python-pptx)" as script_pptx #FFF4DA
-    }
 }
 
 package "Livrables et Sorties" #FFF7E8 {
@@ -65,11 +61,6 @@ package "Livrables et Sorties" #FFF7E8 {
 ' Flux de données
 dataset --> notebook : Scan exhaustif (1 506 imgs)\nChargement ImageFolder
 notebook --> out_png : Export de\nla grille visuelle
-
-out_png ..> script_pptx : Import de l'image
-notebook ..> script_pptx : Données statistiques\net observations
-
-script_pptx --> out_pptx : Mise a jour du\nsupport global
 
 right footer David MEDRAGH projet10
 @enduml

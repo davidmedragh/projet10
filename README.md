@@ -1340,4 +1340,4 @@ Les critères ci-dessous sont relus à partir de l'état réel du dépôt, des n
 | J'ai réalisé un support de présentation avec recommandations de passage à l'échelle | ✅ | `projet10_presentation.pptx` + section `Recommandations — Passage à l'échelle` dans le README |
 | J'ai mis en lien mes choix techniques avec les contraintes métier | ✅ | Priorité donnée au `recall cancer`, discussion budget `5 000 € / 4 millions d'images`, scénario recommandé d'active learning itératif |
 | J'ai préparé des arguments pour la soutenance | ✅ | README complet, visuels d'architecture/stack, diagrammes UML globaux et par étape, justification des choix méthodologiques |
-| J'ai vérifié la cohérence entre notebooks et support | ✅ | Les métriques, le protocole anti-fuite, la comparaison supervisé / semi-supervisé et les recommandations budgetaires sont alignés entre notebooks, README et `generate_pptx.py` |
+| J'ai vérifié la cohérence entre notebooks et support | ✅ | Les métriques, le protocole anti-fuite, la comparaison supervisé / semi-supervisé et les recommandations budgetaires sont alignés entre notebooks, README et le support de présentation |
